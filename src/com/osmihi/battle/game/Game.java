@@ -17,7 +17,7 @@ public class Game {
 		
 		Hero hero1 = new Hero("Ugg", Census.getHeroType("Barbarian"));
 		hero1.addAction(Census.getAttack("Club"));
-		//hero1.addAction(Census.getSkill("Rage"));
+		hero1.addAction(Census.getSkill("Rage"));
 		hTeam.add(hero1);
 		
 		Hero hero2 = new Hero("Art", Census.getHeroType("Archer"));
@@ -29,6 +29,7 @@ public class Game {
 		hero3.addAction(Census.getAttack("Shortsword"));
 		hero3.addAction(Census.getSkill("Trip"));
 		hero3.addAction(Census.getSkill("Poison Dart"));
+		hero3.addAction(Census.getSpell("Haste"));
 		hTeam.add(hero3);
 		
 		Hero hero5 = new Hero("Virgil", Census.getHeroType("Knight"));
@@ -55,7 +56,7 @@ public class Game {
 		eTeam.add(foe4);
 		eTeam.add(foe5);
 		
-		BattleClock bc = new BattleClock(hTeam, eTeam);
+		Combat bc = new Combat(hTeam, eTeam);
 		
 	}
 }

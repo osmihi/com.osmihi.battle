@@ -217,7 +217,7 @@ public class Census {
 		heroTypes.get("Ninja").setOffenseMod(5);
 		heroTypes.get("Ninja").setDefenseMod(0);
 		heroTypes.get("Ninja").setHpUnit(16);
-		heroTypes.get("Ninja").setMpUnit(4);
+		heroTypes.get("Ninja").setMpUnit(6);
 		heroTypes.get("Ninja").setGp(60);
 //		heroTypes.get("Ninja").addImmunity(conditionToAdd);
 //		add actions here

@@ -6,11 +6,14 @@ package com.osmihi.battle.mechanics;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class Generator {
 	
 	private static Random dice = new Random();
+	
+	private static LinkedList<Long> usedIds = new LinkedList<Long>();
 	
 	private Generator() {}
 	
@@ -58,5 +61,14 @@ public class Generator {
 	
 	public static String txtLine(char c, String match) {
 		return txtLine(c,match.length());
+	}
+	
+	public static Long id() {
+		Long id;
+		do {
+			id = new Long(dice.nextLong());
+		} while (usedIds.contains(id));
+		usedIds.add(id);
+		return id;
 	}
 }

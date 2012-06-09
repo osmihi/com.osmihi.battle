@@ -1,14 +1,14 @@
 package com.osmihi.battle.realm;
 
-import com.osmihi.battle.mechanics.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
+
+import com.osmihi.battle.mechanics.Generator;
 
 public class Creature {
+	private Long id;
+	
 	protected String name;
 	protected int strength;
 	protected int intelligence;
@@ -26,8 +26,6 @@ public class Creature {
 	protected int gp;
 	private int xpValue;
 	
-	protected Queue<String> message = new LinkedBlockingQueue<String>();
-	
 	protected Map<Condition,Integer> status;
 	protected ArrayList<Condition> immunities;
 	
@@ -37,6 +35,7 @@ public class Creature {
 	
 	public Creature(String n) {
 		// initialize values
+		id = Generator.id();
 		name = n;
 		strength = 10;
 		intelligence = 10;
@@ -61,6 +60,7 @@ public class Creature {
 	
 	public Creature(Creature cre) {
 		// Copy constructor!
+		id = Generator.id();
 		name = cre.getName();
 		strength = cre.getStrength();
 		intelligence = cre.getIntelligence();
@@ -83,164 +83,36 @@ public class Creature {
 		
 		imageFile = cre.getImageFile();
 	}
-	
-	// Action-related methods
-	public void act(Action ac, Creature target) {
-		if (hasAction(ac) && getMp() >= ac.getMpCost()) {
-			String[] verb = {"",""};
-			switch (ac.getType()) {
-				case ATTACK:
-					verb[0] = "attacks with";
-					verb[1] = "against";
-					break;
-				case SKILL:
-					verb[0] = "uses";
-					verb[1] = "against";
-					break;
-				case SPELL:
-					verb[0] = "casts";
-					verb[1] = "upon";
-					break;
-				default:
-					break;
-			}
-			
-			loseMp(ac.getMpCost());
-			
-			setMessage(getName() + " " + verb[0] + " " + ac.getName() + " " + verb[1] + " " + target.getName() + "!");
-			target.react(ac, this);
-		}
-	}
-	public void react(Action ac, Creature attacker) {
-		int aStr = attacker.getStrength();
-		int aInt = attacker.getIntelligence();
-		int aSpd = attacker.getSpeed();
-		int aOff = attacker.getOffense();
-		int aDef = attacker.getDefense();
-		
-		double hitRoll = 0;
-		double defRoll = 0;
-		int dam = 0;
-		boolean lands = ( ac.getStatusChance() >= Generator.random(10) );
-		int hitStat = 0;
-		int defStat = 0;
-		int damStat = 0;
-		
-		switch (ac.getType()) {
-			case ATTACK:
-				hitStat = aOff;
-				defStat = getSpeed();
-				damStat = aStr;
-				break;
-			case SKILL:
-				hitStat = (aInt + aSpd) / 2;
-				defStat = ( getIntelligence() + getSpeed() ) / 2;
-				damStat = (aInt + aSpd) / 2;
-				break;
-			case SPELL:
-				hitStat = aInt;
-				defStat = getIntelligence();
-				damStat = aInt;
-				
-				break;
-			default:
-				break;
-		}
-		
-		hitRoll = Generator.random(hitStat) * (ac.getSuccessChance() / 10.0);
-		defRoll = Generator.random(defStat);
-		if (damStat <= 0) {damStat = 1;}		
-		dam = Generator.random( ac.getMinDamage(), ac.getMaxDamage() - ac.getMinDamage() );
-		dam = dam + ( damStat / 4 ) - ( getDefense() / 4 );
-		if (dam < 1) {dam = 1;}
-		
-		if ((int)hitRoll > (int)defRoll) {
-			setMessage(attacker.getName() + "'s " + ac.getName() + " hits " + getName() + " for " + dam + " damage.");
-			loseHp(dam);
-			if (lands && getHp() > 0 && !(getImmunities().contains(ac.getStatusEffect()))) {
-				setMessage(getName() + " is affected by " + ac.getStatusEffect().getName() + ".");
-				beginStatus(ac.getStatusEffect());
-			}
-		} else {setMessage(attacker.getName() + "'s " + ac.getName() + " misses " + getName() + ".");}
-	}
-	
-	// Status-related methods
-	public void beginStatus(Condition c) {
-		if (!hasStatus(c)) {
-			addStatus(c, c.getDuration());
-			setStrength(getStrength() + c.getStrengthMod());
-			setIntelligence(getIntelligence() + c.getIntelligenceMod());
-			setSpeed(getSpeed() + c.getSpeedMod());
-			setOffense(getOffense() + c.getOffenseMod());
-			setDefense(getDefense() + c.getDefenseMod());
-		}
-	}
-	public void sustainStatus(Condition c) {
-		if (hasStatus(c)) {
-			int left = getStatus().get(c).intValue();
-			if (left <= 0) {
-				endStatus(c);
-			} else{
-				int rDam = Generator.random(c.getRoundDam());
-				int rDrain = Generator.random(c.getRoundDrain());
-				loseHp(rDam);
-				loseMp(rDrain);
-				String msg = getName();
-				if (rDam >= 0) {msg += " loses ";}
-				else {msg += " gains ";}
-				msg += rDam + " hp ";
-				if (rDrain != 0) {
-					msg += "and mp is affected by " + rDrain + " ";
-				}
-				msg += "due to " + c.getName() + ".";
-				if (rDam > 0 || rDrain != 0) setMessage(msg);
-				status.put(c, new Integer( left - 1 ) );
-			}
-		}
-	}
-	public void endStatus(Condition c) {
-		if (hasStatus(c)) {
-			setStrength(getStrength() - c.getStrengthMod());
-			setIntelligence(getIntelligence() - c.getIntelligenceMod());
-			setSpeed(getSpeed() - c.getSpeedMod());
-			setOffense(getOffense() - c.getOffenseMod());
-			setDefense(getDefense() - c.getDefenseMod());
-			dropStatus(c);
-			setMessage(getName() + " is no longer affected by " + c.getName() + ".");
-		}
-	}
-	
-	// Combat-related methods
-	public int rollInitiative() {
-		initiative = Generator.random(1,getSpeed());
-		return initiative;
-	}
-	
-	public void loseHp(int dam) {
+
+	public int loseHp(int dam) {
 		if (dam < 0) {dam = 0;}
-		setHp(getHp() - dam);
+		hp -= dam;
 		if (hp <= 0) {
-			setHp(0);
-			setMessage(getName() + " has perished.");
+			hp = 0;
 		}
+		return hp;
 	}
-	public void gainHp(int amount) {
+	public int gainHp(int amount) {
 		if (amount < 0) {amount = 0;}
-		setHp(getHp() + amount);
-		if (hp > maxHp) {setHp(maxHp);}
+		hp += amount;
+		if (hp > maxHp) {hp = maxHp;}
+		return hp;
 	}
-	public void loseMp(int drain) {
+	public int loseMp(int drain) {
 		if (drain < 0) {drain = 0;}
-		setMp(getMp() - drain);
-		if (mp < 0) {setMp(0);}
+		mp -= drain;
+		if (mp < 0) {mp = 0;}
+		return mp;
 	}
-	public void gainMp(int amount) {
+	public int gainMp(int amount) {
 		if (amount < 0) {amount = 0;}
-		setMp(getMp() + amount);
-		if (mp > maxMp) {setMp(maxMp);}
+		mp += amount;
+		if (mp > maxMp) {mp = maxMp;}
+		return mp;
 	}
 
 	// "Getter" methods
+	public Long getId() {return id;}
 	public String getName() {return name;}
 	public int getStrength() {return strength;}
 	public int getIntelligence() {return intelligence;}
@@ -254,12 +126,6 @@ public class Creature {
 	public int getInitiative() {return initiative;} 
 	public int getGp() {return gp;}
 	public int getXpValue() {return xpValue;}
-	public String getMessage() {
-		String m = "";
-		for(String s : message) {m += s + "\n";}
-		message.removeAll(message);
-		return m;
-	}
 	
 	public Map<Condition,Integer> getStatus() {return status;}
 	public int getStatusDuration(Condition c) {return status.get(c).intValue();}
@@ -287,11 +153,10 @@ public class Creature {
 	public void setInitiative(int newInitiative) {initiative = newInitiative;}
 	public void setGp(int newGp) {gp = newGp;}
 	public void setXpValue(int newXpValue) {xpValue = newXpValue;}
-	public void setMessage(String m) {if (m != "") message.add(m);}
-	
+
 	public void setStatus(Map<Condition,Integer> newStatus) {status = newStatus;}
-	private void addStatus(Condition conditionToAdd, int dur) {status.put(conditionToAdd, new Integer(dur));}
-	private void dropStatus(Condition conditionToDrop) {status.remove(conditionToDrop);}
+	public void addStatus(Condition conditionToAdd, int dur) {status.put(conditionToAdd, new Integer(dur));}
+	public void dropStatus(Condition conditionToDrop) {status.remove(conditionToDrop);}
 	
 	public void setImmunities(ArrayList<Condition> newImmunities) {immunities = newImmunities;}
 	public void addImmunity(Condition conditionToAdd) {immunities.add(conditionToAdd);}
