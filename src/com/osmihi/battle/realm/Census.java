@@ -37,17 +37,20 @@ public class Census {
 		conditions.get("Poison").setDuration(4);
 		
 		conditions.put("Slow", new Condition("Slow"));
-		conditions.get("Slow").setSpeedMod(-6);
+		conditions.get("Slow").setSpeedMod(-10);
 		conditions.get("Slow").setDuration(2);
 		
 		conditions.put("Stone", new Condition("Stone"));
 		conditions.get("Stone").setSpeedMod(-50);
+		conditions.get("Stone").setIntelligenceMod(-50);
+		conditions.get("Stone").setStrengthMod(-50);
+		conditions.get("Stone").setOffenseMod(-50);
 		conditions.get("Stone").setDefenseMod(50);
 		conditions.get("Stone").setDuration(3);
 		
 		conditions.put("Haste", new Condition("Haste"));
-		conditions.get("Haste").setSpeedMod(20);
-		conditions.get("Haste").setDefenseMod(5);
+		conditions.get("Haste").setSpeedMod(25);
+		conditions.get("Haste").setDefenseMod(15);
 		conditions.get("Haste").setDuration(3);
 		
 		conditions.put("Might", new Condition("Might"));

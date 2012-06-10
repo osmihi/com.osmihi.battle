@@ -244,15 +244,15 @@ public class GUI_BattleScreen extends JFrame {
 		}
 
 		@Override
-		public void mouseClicked(MouseEvent e) {
+		public void mouseClicked(MouseEvent e) {}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
 			for (TurnPanel tp : turnPanels.values()) {
 				selectedTarget = c;
 				tp.selectTarget(this.c);
 			}
 		}
-
-		@Override
-		public void mousePressed(MouseEvent e) {}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {}
