@@ -30,6 +30,7 @@ public class Hero extends Creature {
 		gp += (heroType.getGp() / 2) + Generator.random(heroType.getGp() / 2);
 		immunities = heroType.getImmunities();
 		setImageFile(heroType.getImageFile());
+		setImageAlt(heroType.getImageAlt());
 	}
 	
 	@Override

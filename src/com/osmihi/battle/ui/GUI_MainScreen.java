@@ -41,6 +41,7 @@ public class GUI_MainScreen extends GUI_GenericWindow {
 		
 		buttonPanel = new JPanel();
 		buttonPanel.setLayout(new GridLayout(0,1,10,10));
+		buttonPanel.setOpaque(false);
 		buttonPanel.add(charScreenButton);
 		buttonPanel.add(partyScreenButton);
 		buttonPanel.add(battleScreenButton);

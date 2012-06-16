@@ -1,6 +1,7 @@
 package com.osmihi.battle.realm;
 
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class HeroType {
@@ -29,6 +30,7 @@ public class HeroType {
 	// then each after that has one or more pre-reqs, etc.... some kind of tree
 
 	private String imageFile;
+	private String imageAlt;
 
 	public HeroType(String n) {
 		// Default values
@@ -43,7 +45,10 @@ public class HeroType {
 		gp = 20;
 		immunities = new ArrayList<Condition>();	
 		//actions = new /**/;
-		imageFile = null;
+		File f = new File("res/img/Creature/" + getName() + "/icon.png");
+		if (f.exists()) {imageFile = "res/img/Creature/" + getName() + "/icon.png";}
+		f = new File("res/img/Creature/" + getName() + "/action.png");
+		if (f.exists()) {imageAlt  = "res/img/Creature/" + getName() + "/action.png";}
 	}
 	
 	// "Getter" methods
@@ -58,8 +63,10 @@ public class HeroType {
 	public int getGp() {return gp;}
 	public ArrayList<Condition> getImmunities() {return immunities;}
 	public String getImageFile() {return imageFile;}
+	public String getImageAlt() {return imageAlt;}
 
 	public void setImageFile(String f) {imageFile = f;}
+	public void setImageAlt(String f) {imageAlt = f;}
 
 	public boolean isImmune(Condition conditionToCheck) {return immunities.contains(conditionToCheck);}
 	//	public /**/ getActions() {}

@@ -23,7 +23,7 @@ public abstract class GUI_GenericWindow extends JFrame {
 		
 	public GUI_GenericWindow() {
 		mainPanel = new JPanel();
-		mainPanel.setPreferredSize(new Dimension(720,480));
+		mainPanel.setPreferredSize(new Dimension(720,600));
 		mainPanel.setLayout(new BorderLayout(10,10));
 		mainPanel.setBorder(new LineBorder(colors[2],4));
 		mainPanel.setBackground(colors[3]);

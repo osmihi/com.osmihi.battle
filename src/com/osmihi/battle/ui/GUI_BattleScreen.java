@@ -11,7 +11,6 @@ import com.osmihi.battle.realm.Action;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -29,23 +28,12 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
-public class GUI_BattleScreen extends JFrame {
+public class GUI_BattleScreen extends GUI_GenericWindow {
 	private static final long serialVersionUID = 1L;
 
 	private final int FRAME_RATE = 125;
 	
 	Combat bc;
-	
-	// Color theme
-	Color[] colors = {
-		new Color(125,42,53),
-		new Color(204,146,88),
-		new Color(145,122,86),
-		new Color(180,186,108),
-		new Color(254,255,194)
-	};
-	
-	JPanel mainPanel;
 	
 	JPanel battlePicPanel;
 	Map<Creature,CreaturePanel> creaturePanels;
@@ -61,6 +49,7 @@ public class GUI_BattleScreen extends JFrame {
 	Action selectedAction = null;
 	
 	public GUI_BattleScreen(Combat bClock) {
+		super();
 		bc = bClock;
 		creaturePanels = new HashMap<Creature,CreaturePanel>();
 		turnPanels = new HashMap<Creature,TurnPanel>();
@@ -71,21 +60,14 @@ public class GUI_BattleScreen extends JFrame {
 		makePicPanel();
 		makeTextPanel();
 		makeTurnPanels();
-		
-		mainPanel = new JPanel();
-		mainPanel.setPreferredSize(new Dimension(720,480));
-		mainPanel.setLayout(new BorderLayout(10,10));
-		mainPanel.setBorder(new LineBorder(colors[2],4));
-		mainPanel.setBackground(colors[3]);
+
 		mainPanel.add(battlePicPanel, BorderLayout.NORTH);
 		mainPanel.add(bottomPanel, BorderLayout.SOUTH);
-		
-		add(mainPanel);	
+	}
+	
+	protected void populateWindow() {
 		setTitle("Battle!");
-		pack();
-		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setVisible(true);
 	}
 	
 	private void makePicPanel() {
@@ -112,12 +94,11 @@ public class GUI_BattleScreen extends JFrame {
 		
 		battlePicPanel.add(heroPanel,BorderLayout.WEST);
 		battlePicPanel.add(enemyPanel,BorderLayout.EAST);
-		
 	}
 	
 	private void makeTextPanel() {
 		battleTextPanel = new JPanel(); 
-		battleTextPanel.setPreferredSize(new Dimension(620,128));
+		battleTextPanel.setPreferredSize(new Dimension(620,248));
 		battleTextPanel.setLayout(new BorderLayout(4,4));
 		battleText = new JTextArea("");
 		battleText.setFont(new Font("Consolas", Font.PLAIN, 12));
@@ -320,6 +301,12 @@ public class GUI_BattleScreen extends JFrame {
 		private JLabel mpLabel;
 		private JLabel conLabel;
 		
+		private JLabel strLabel;
+		private JLabel intLabel;
+		private JLabel spdLabel;
+		private JLabel offLabel;
+		private JLabel defLabel;
+		
 		private JLabel tName;
 		private JLabel tStat;
 		private Map<Action,JButton> actionBtns;
@@ -329,6 +316,12 @@ public class GUI_BattleScreen extends JFrame {
 			hpLabel = new JLabel();
 			mpLabel = new JLabel();
 			conLabel = new JLabel();
+			strLabel = new JLabel();
+			intLabel = new JLabel();
+			spdLabel = new JLabel();
+			offLabel = new JLabel();
+			defLabel = new JLabel();
+			
 			targetPane = new JPanel();
 			targetPics = new JPanel();
 			tName = new JLabel(" ");
@@ -348,12 +341,44 @@ public class GUI_BattleScreen extends JFrame {
 			add(actionPane);
 		}
 		
+		private void makeInfoPane() {
+			infoPane = new JPanel();
+			infoPane.setLayout(new BoxLayout(infoPane, BoxLayout.Y_AXIS));
+			
+			JLabel hl = new JLabel("Lv " + ((Hero)c).getLevel() + " " + ((Hero)c).getHeroType().getName());
+			hl.setAlignmentX(Component.CENTER_ALIGNMENT);
+			hpLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+			mpLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+			strLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+			intLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+			spdLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+			offLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+			defLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+			conLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+			
+			infoPane.add(new JLabel(" "));
+			infoPane.add(hl);
+			infoPane.add(new JLabel(" "));
+			infoPane.add(hpLabel);
+			infoPane.add(mpLabel);
+			infoPane.add(new JLabel(" "));
+			infoPane.add(strLabel);
+			infoPane.add(intLabel);
+			infoPane.add(spdLabel);
+			infoPane.add(offLabel);
+			infoPane.add(defLabel);
+			
+			infoPane.add(conLabel);
+			for (Condition con : c.getStatus().keySet()) {
+				infoPane.add(new JLabel(con.getName() + " (" + c.getStatus().get(con).intValue() + ")"));
+			}
+		}
+		
 		private void makePicPane() {
 			if (c.getImageFile() != null) {icon = new ImageIcon(c.getImageFile());}
 			else {icon = new ImageIcon("res/img/_blank.png");}
 			if (c.getImageAlt() != null) {icon2 = new ImageIcon(c.getImageAlt());}
 			else {icon2 = icon;}
-			
 			
 			picPane = new JPanel();
 			picPane.setLayout(new BoxLayout(picPane, BoxLayout.Y_AXIS));
@@ -365,50 +390,15 @@ public class GUI_BattleScreen extends JFrame {
 			JLabel hrol = new JLabel("Lv " + ((Hero)c).getLevel() + " " + ((Hero)c).getHeroType().getName());
 			hrol.setAlignmentX(Component.CENTER_ALIGNMENT);
 			
+			picPane.add(new JLabel(" "));
+			picPane.add(new JLabel(" "));
+			picPane.add(new JLabel(" "));
 			picPane.add(naml);
 			picPane.add(new JLabel(" "));
 			picPane.add(picl);
 			picPane.add(new JLabel(" "));
 			picPane.add(hrol);
-		}
-		
-		private void makeInfoPane() {
-			infoPane = new JPanel();
-			infoPane.setLayout(new BoxLayout(infoPane, BoxLayout.Y_AXIS));
-			
-			JLabel hl = new JLabel("Lv " + ((Hero)c).getLevel() + " " + ((Hero)c).getHeroType().getName());
-			hl.setAlignmentX(Component.CENTER_ALIGNMENT);
-			hpLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-			mpLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-			conLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-			
-			infoPane.add(new JLabel(" "));
-			infoPane.add(hl);
-			infoPane.add(new JLabel(" "));
-			infoPane.add(hpLabel);
-			infoPane.add(mpLabel);
-			infoPane.add(conLabel);
-			for (Condition con : c.getStatus().keySet()) {
-				infoPane.add(new JLabel(con.getName() + " (" + c.getStatus().get(con).intValue() + ")"));
-			}
-		}
-		
-		private void makeActionPane() {
-			actionPane = new JPanel();
-			//actionPane.setLayout(new BoxLayout(actionPane, BoxLayout.Y_AXIS));
-			actionPane.setLayout(new GridLayout(0,1));
-			for (final Action a : c.getActions()) {
-				JButton btn = new JButton(a.getName() + " (" + a.getType().toString() + ")");
-				btn.setAlignmentX(CENTER_ALIGNMENT);
-				btn.addActionListener(
-					new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							selectedAction = a;
-						}
-					});
-				actionBtns.put(a,btn);
-			}
-			for (JButton btn : actionBtns.values()) {actionPane.add(btn);}
+			picPane.add(new JLabel(" "));
 		}
 		
 		private void makeTargetPane() {
@@ -429,6 +419,24 @@ public class GUI_BattleScreen extends JFrame {
 			targetPane.add(targetPics);
 			targetPane.add(tStat);
 		}
+
+		private void makeActionPane() {
+			actionPane = new JPanel();
+			//actionPane.setLayout(new BoxLayout(actionPane, BoxLayout.Y_AXIS));
+			actionPane.setLayout(new GridLayout(0,1));
+			for (final Action a : c.getActions()) {
+				JButton btn = new JButton(a.getName() + " (" + a.getType().toString() + ")");
+				btn.setAlignmentX(CENTER_ALIGNMENT);
+				btn.addActionListener(
+					new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							selectedAction = a;
+						}
+					});
+				actionBtns.put(a,btn);
+			}
+			for (JButton btn : actionBtns.values()) {actionPane.add(btn);}
+		}
 		
 		public void refresh() {
 			refreshStats();
@@ -446,6 +454,12 @@ public class GUI_BattleScreen extends JFrame {
 		private void refreshStats() {
 			hpLabel.setText(c.getHp() + " / " + c.getMaxHp() + " hp");
 			mpLabel.setText(c.getMp() + " / " + c.getMaxMp() + " mp");
+			strLabel.setText("Str: " + c.getStrength());
+			intLabel.setText("Int: " + c.getIntelligence());
+			spdLabel.setText("Spd: " + c.getSpeed());
+			offLabel.setText("Off: " + c.getOffense());
+			defLabel.setText("Def: " + c.getDefense());
+			
 			String conText = "";
 			for (Condition con : c.getStatus().keySet()) {
 				conText += con.getName() + " (" + c.getStatus().get(con).intValue() + ") ";

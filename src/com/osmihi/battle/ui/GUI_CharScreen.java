@@ -33,7 +33,7 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 		btn1 = new JButton("Make characters (stock)");
 		btn2 = new JButton("Print characters");
 		btn3 = new JButton("Done");
-		btn3.setEnabled(false);
+		//btn3.setEnabled(false);
 		
 		btn1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -85,6 +85,15 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 		hero3.addAction(Census.getSkill("Poison Dart"));
 		hero3.addAction(Census.getSpell("Haste"));
 		game.addHero(hero3);
+		
+		Hero hero4 = new Hero("Fuji", Census.getHeroType("Thief"));
+		hero4.addAction(Census.getAttack("Knife"));
+		hero4.addAction(Census.getSkill("Poison Dart"));
+		hero4.addAction(Census.getSkill("Trip"));
+		hero4.addAction(Census.getSpell("Haste"));
+		hero4.addAction(Census.getSkill("Cripple"));
+		hero4.addAction(Census.getSkill("Hide"));
+		game.addHero(hero4);
 		
 		Hero hero5 = new Hero("Virgil", Census.getHeroType("Knight"));
 		hero5.addAction(Census.getAttack("Longsword"));

@@ -211,10 +211,16 @@ public class Combat {
 			
 			hitRoll = Generator.random(hitStat) * (act.getSuccessChance() / 10.0);
 			defRoll = Generator.random(defStat) * ( (10 - act.getSuccessChance()) / 10.0);
-			if (damStat <= 0) {damStat = 1;}		
+			if (damStat < 1) {damStat = 1;}		
 			dam = Generator.random( act.getMinDamage(), act.getMaxDamage() - act.getMinDamage() );
 			dam = dam + ( damStat / 4 ) - ( target.getDefense() / 4 );
-			if (dam < 1) {dam = 1;}
+			if ((dam < 1 && act.getType() == Action.ActionType.ATTACK)) {dam = 1;}
+			if (dam < 0) {dam = 0;}
+			if (actor == target) {
+				hitRoll = Generator.random(10);
+				defRoll = ( (10 - act.getSuccessChance()) / 10.0 );
+				dam = 0;
+			}
 			
 			if ((int)hitRoll > (int)defRoll) {
 				setMessage(actor.getName() + "'s " + act.getName() + " hits " + target.getName() + " for " + dam + " damage.");

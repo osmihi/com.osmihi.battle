@@ -58,6 +58,17 @@ public class Census {
 		conditions.get("Might").setIntelligenceMod(-5);
 		conditions.get("Might").setDuration(3);
 		
+		conditions.put("Cripple", new Condition("Cripple"));
+		conditions.get("Cripple").setDefenseMod(-20);
+		conditions.get("Cripple").setSpeedMod(-10);
+		conditions.get("Cripple").setDuration(1);
+		
+		conditions.put("Hide", new Condition("Hide"));
+		conditions.get("Hide").setOffenseMod(-50);
+		conditions.get("Hide").setDefenseMod(50);
+		conditions.get("Hide").setDuration(1);
+		
+		
 		// Actions
 		// Attacks, Skills, Spells
 		actions.putAll(attacks);
@@ -153,6 +164,22 @@ public class Census {
 		skills.get("Rage").setStatusChance(10);
 		skills.get("Rage").setStatusEffect(conditions.get("Might"));
 		
+		skills.put("Cripple", new Action("Cripple", Action.ActionType.SKILL));
+		skills.get("Cripple").setMpCost(0);
+		skills.get("Cripple").setSuccessChance(5);
+		skills.get("Cripple").setMinDamage(0);
+		skills.get("Cripple").setMaxDamage(6);
+		skills.get("Cripple").setStatusChance(10);
+		skills.get("Cripple").setStatusEffect(conditions.get("Cripple"));
+
+		skills.put("Hide", new Action("Hide", Action.ActionType.SKILL));
+		skills.get("Hide").setMpCost(0);
+		skills.get("Hide").setSuccessChance(8);
+		skills.get("Hide").setMinDamage(0);
+		skills.get("Hide").setMaxDamage(0);
+		skills.get("Hide").setStatusChance(10);
+		skills.get("Hide").setStatusEffect(conditions.get("Hide"));
+		
 		spells.put("Slow", new Action("Slow", Action.ActionType.SPELL));
 		spells.get("Slow").setMpCost(4);
 		spells.get("Slow").setSuccessChance(6);
@@ -198,7 +225,7 @@ public class Census {
 		heroTypes.get("Barbarian").setGp(20);
 		heroTypes.get("Barbarian").addImmunity(conditions.get("Poison"));
 //		add actions here
-		heroTypes.get("Barbarian").setImageFile("res/img/Barbarian.png");
+		//heroTypes.get("Barbarian").setImageFile("res/img/Barbarian.png");
 		
 		heroTypes.put("Archer", new HeroType("Archer"));
 		heroTypes.get("Archer").setStrengthMod(0);
@@ -211,7 +238,7 @@ public class Census {
 		heroTypes.get("Archer").setGp(80);
 //		heroTypes.get("Archer").addImmunity(conditionToAdd);
 //		add actions here
-		heroTypes.get("Archer").setImageFile("res/img/Archer.png");
+		//heroTypes.get("Archer").setImageFile("res/img/Archer.png");
 		
 		heroTypes.put("Ninja", new HeroType("Ninja"));
 		heroTypes.get("Ninja").setStrengthMod(0);
@@ -224,7 +251,7 @@ public class Census {
 		heroTypes.get("Ninja").setGp(60);
 //		heroTypes.get("Ninja").addImmunity(conditionToAdd);
 //		add actions here
-		heroTypes.get("Ninja").setImageFile("res/img/Ninja.png");
+		//heroTypes.get("Ninja").setImageFile("res/img/Ninja.png");
 		
 		heroTypes.put("Thief", new HeroType("Thief"));
 		heroTypes.get("Thief").setStrengthMod(-6);
@@ -233,11 +260,11 @@ public class Census {
 		heroTypes.get("Thief").setOffenseMod(-7);
 		heroTypes.get("Thief").setDefenseMod(10);
 		heroTypes.get("Thief").setHpUnit(12);
-		heroTypes.get("Thief").setMpUnit(6);
+		heroTypes.get("Thief").setMpUnit(12);
 		heroTypes.get("Thief").setGp(200);
 //		heroTypes.get("Thief").addImmunity(conditionToAdd);
 //		add actions here
-		heroTypes.get("Thief").setImageFile("res/img/Thief.png");
+		//heroTypes.get("Thief").setImageFile("res/img/Thief.png");
 		
 		heroTypes.put("Knight", new HeroType("Knight"));
 		heroTypes.get("Knight").setStrengthMod(10);
@@ -250,7 +277,7 @@ public class Census {
 		heroTypes.get("Knight").setGp(100);
 //		heroTypes.get("Knight").addImmunity(conditionToAdd);
 //		add actions here
-		heroTypes.get("Knight").setImageFile("res/img/Knight.png");
+		//heroTypes.get("Knight").setImageFile("res/img/Knight.png");
 
 		heroTypes.put("Wizard", new HeroType("Wizard"));
 		heroTypes.get("Wizard").setStrengthMod(-7);
@@ -263,7 +290,7 @@ public class Census {
 		heroTypes.get("Wizard").setGp(120);
 //		heroTypes.get("Wizard").addImmunity(conditionToAdd);
 //		add actions here
-		heroTypes.get("Wizard").setImageFile("res/img/Wizard.png");
+		//heroTypes.get("Wizard").setImageFile("res/img/Wizard.png");
 
 		// Monsters
 		monsters.put("Wolf", new Creature("Wolf"));
@@ -280,8 +307,8 @@ public class Census {
 		monsters.get("Wolf").setXpValue(50);
 //		monsters.get("Wolf").addImmunity(conditionToAdd);
 		monsters.get("Wolf").addAction(attacks.get("Wolf Bite"));
-		monsters.get("Wolf").setImageFile("res/img/Wolf.png");
-		monsters.get("Wolf").setImageAlt("res/img/Wolf2.png");
+		//monsters.get("Wolf").setImageFile("res/img/Wolf.png");
+		//monsters.get("Wolf").setImageAlt("res/img/Wolf2.png");
 		
 		monsters.put("Goblin", new Creature("Goblin"));
 		monsters.get("Goblin").setStrength(6);
@@ -298,8 +325,8 @@ public class Census {
 		monsters.get("Goblin").addImmunity(conditions.get("Poison"));
 		monsters.get("Goblin").addAction(attacks.get("Shortsword"));
 //		monsters.get("Goblin").addAction(actionToAdd);
-		monsters.get("Goblin").setImageFile("res/img/Goblin.png");
-		monsters.get("Goblin").setImageAlt("res/img/Goblin2.png");
+		//monsters.get("Goblin").setImageFile("res/img/Goblin.png");
+		//monsters.get("Goblin").setImageAlt("res/img/Goblin2.png");
 		
 		monsters.put("Zombie", new Creature("Zombie"));
 		monsters.get("Zombie").setStrength(10);
@@ -316,8 +343,8 @@ public class Census {
 		monsters.get("Zombie").addImmunity(conditions.get("Poison"));
 		monsters.get("Zombie").addImmunity(conditions.get("Slow"));
 		monsters.get("Zombie").addAction(attacks.get("Zombie Grab"));
-		monsters.get("Zombie").setImageFile("res/img/Zombie.png");
-		monsters.get("Zombie").setImageAlt("res/img/Zombie2.png");
+		//monsters.get("Zombie").setImageFile("res/img/Zombie.png");
+		//monsters.get("Zombie").setImageAlt("res/img/Zombie2.png");
 		
 		monsters.put("Ogre", new Creature("Ogre"));
 		monsters.get("Ogre").setStrength(15);
@@ -335,8 +362,8 @@ public class Census {
 		monsters.get("Ogre").addAction(attacks.get("Club"));
 		monsters.get("Ogre").addAction(skills.get("Trip"));
 		monsters.get("Ogre").addAction(spells.get("Slow"));
-		monsters.get("Ogre").setImageFile("res/img/Ogre.png");
-		monsters.get("Ogre").setImageAlt("res/img/Ogre2.png");
+		//monsters.get("Ogre").setImageFile("res/img/Ogre.png");
+		//monsters.get("Ogre").setImageAlt("res/img/Ogre2.png");
 	}
 
 	public static Collection<Condition> getConditions() {return conditions.values();}

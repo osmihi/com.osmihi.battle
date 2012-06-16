@@ -1,5 +1,9 @@
+//references:
+// http://stackoverflow.com/questions/1816673/how-do-i-check-if-a-file-exists-java-on-windows
+
 package com.osmihi.battle.realm;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,6 +61,12 @@ public class Creature {
 		immunities = new ArrayList<Condition>();
 		
 		actions = new ArrayList<Action>();
+		
+		// Initialize image resources
+		File f = new File("res/img/Creature/" + getName() + "/icon.png");
+		if (f.exists()) {imageFile = "res/img/Creature/" + getName() + "/icon.png";}
+		f = new File("res/img/Creature/" + getName() + "/action.png");
+		if (f.exists()) {imageAlt  = "res/img/Creature/" + getName() + "/action.png";}
 	}
 	
 	public Creature(Creature cre) {
