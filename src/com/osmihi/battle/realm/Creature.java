@@ -32,6 +32,7 @@ public class Creature {
 	protected ArrayList<Action> actions;
 	
 	protected String imageFile = null;
+	protected String imageAlt = null;
 	
 	public Creature(String n) {
 		// initialize values
@@ -82,6 +83,7 @@ public class Creature {
 		actions = cre.getActions();
 		
 		imageFile = cre.getImageFile();
+		imageAlt = cre.getImageAlt(); 
 	}
 
 	public int loseHp(int dam) {
@@ -138,6 +140,7 @@ public class Creature {
 	public boolean hasAction(Action a) {return actions.contains(a);}
 	
 	public String getImageFile() {return imageFile;}
+	public String getImageAlt() {return imageAlt;}
 
 	// "Setter" methods
 	public void setName(String newName) {name = newName;}
@@ -167,6 +170,7 @@ public class Creature {
 	public void clearActions() {actions.clear();}
 
 	public void setImageFile(String f) {imageFile = f;}
+	public void setImageAlt(String f) {imageAlt = f;}
 	
 	@Override
 	public String toString() {

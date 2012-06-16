@@ -75,7 +75,7 @@ public class Census {
 		attacks.put("Knife", new Action("Knife", Action.ActionType.ATTACK));
 		attacks.get("Knife").setMpCost(0);
 		attacks.get("Knife").setSuccessChance(7);
-		attacks.get("Knife").setMinDamage(0);
+		attacks.get("Knife").setMinDamage(2);
 		attacks.get("Knife").setMaxDamage(6);
 		attacks.get("Knife").setStatusChance(0);
 		attacks.get("Knife").setStatusEffect(null);
@@ -99,7 +99,7 @@ public class Census {
 		attacks.put("Shortbow", new Action("Shortbow", Action.ActionType.ATTACK));
 		attacks.get("Shortbow").setMpCost(0);
 		attacks.get("Shortbow").setSuccessChance(8);
-		attacks.get("Shortbow").setMinDamage(0);
+		attacks.get("Shortbow").setMinDamage(3);
 		attacks.get("Shortbow").setMaxDamage(12);
 		attacks.get("Shortbow").setStatusChance(0);
 		attacks.get("Shortbow").setStatusEffect(null);
@@ -171,7 +171,7 @@ public class Census {
 		
 		spells.put("Haste", new Action("Haste", Action.ActionType.SPELL));
 		spells.get("Haste").setMpCost(6);
-		spells.get("Haste").setSuccessChance(6);
+		spells.get("Haste").setSuccessChance(7);
 		spells.get("Haste").setMinDamage(0);
 		spells.get("Haste").setMaxDamage(0);
 		spells.get("Haste").setStatusChance(10);
@@ -181,7 +181,7 @@ public class Census {
 		spells.get("Bolt").setMpCost(4);
 		spells.get("Bolt").setSuccessChance(8);
 		spells.get("Bolt").setMinDamage(6);
-		spells.get("Bolt").setMaxDamage(12);
+		spells.get("Bolt").setMaxDamage(20);
 		spells.get("Bolt").setStatusChance(0);
 		spells.get("Bolt").setStatusEffect(null);
 		
@@ -203,9 +203,9 @@ public class Census {
 		heroTypes.put("Archer", new HeroType("Archer"));
 		heroTypes.get("Archer").setStrengthMod(0);
 		heroTypes.get("Archer").setIntelligenceMod(0);
-		heroTypes.get("Archer").setSpeedMod(5);
+		heroTypes.get("Archer").setSpeedMod(0);
 		heroTypes.get("Archer").setOffenseMod(0);
-		heroTypes.get("Archer").setDefenseMod(10);
+		heroTypes.get("Archer").setDefenseMod(15);
 		heroTypes.get("Archer").setHpUnit(16);
 		heroTypes.get("Archer").setMpUnit(0);
 		heroTypes.get("Archer").setGp(80);
@@ -259,7 +259,7 @@ public class Census {
 		heroTypes.get("Wizard").setOffenseMod(-7);
 		heroTypes.get("Wizard").setDefenseMod(5);
 		heroTypes.get("Wizard").setHpUnit(9);
-		heroTypes.get("Wizard").setMpUnit(18);
+		heroTypes.get("Wizard").setMpUnit(32);
 		heroTypes.get("Wizard").setGp(120);
 //		heroTypes.get("Wizard").addImmunity(conditionToAdd);
 //		add actions here
@@ -281,6 +281,7 @@ public class Census {
 //		monsters.get("Wolf").addImmunity(conditionToAdd);
 		monsters.get("Wolf").addAction(attacks.get("Wolf Bite"));
 		monsters.get("Wolf").setImageFile("res/img/Wolf.png");
+		monsters.get("Wolf").setImageAlt("res/img/Wolf2.png");
 		
 		monsters.put("Goblin", new Creature("Goblin"));
 		monsters.get("Goblin").setStrength(6);
@@ -298,6 +299,7 @@ public class Census {
 		monsters.get("Goblin").addAction(attacks.get("Shortsword"));
 //		monsters.get("Goblin").addAction(actionToAdd);
 		monsters.get("Goblin").setImageFile("res/img/Goblin.png");
+		monsters.get("Goblin").setImageAlt("res/img/Goblin2.png");
 		
 		monsters.put("Zombie", new Creature("Zombie"));
 		monsters.get("Zombie").setStrength(10);
@@ -315,6 +317,7 @@ public class Census {
 		monsters.get("Zombie").addImmunity(conditions.get("Slow"));
 		monsters.get("Zombie").addAction(attacks.get("Zombie Grab"));
 		monsters.get("Zombie").setImageFile("res/img/Zombie.png");
+		monsters.get("Zombie").setImageAlt("res/img/Zombie2.png");
 		
 		monsters.put("Ogre", new Creature("Ogre"));
 		monsters.get("Ogre").setStrength(15);
@@ -328,11 +331,12 @@ public class Census {
 		monsters.get("Ogre").setMp(30);
 		monsters.get("Ogre").setGp(120);
 		monsters.get("Ogre").setXpValue(250);
-		monsters.get("Ogre").addImmunity(conditions.get("Poison"));
 		monsters.get("Ogre").addImmunity(conditions.get("Slow"));
 		monsters.get("Ogre").addAction(attacks.get("Club"));
 		monsters.get("Ogre").addAction(skills.get("Trip"));
+		monsters.get("Ogre").addAction(spells.get("Slow"));
 		monsters.get("Ogre").setImageFile("res/img/Ogre.png");
+		monsters.get("Ogre").setImageAlt("res/img/Ogre2.png");
 	}
 
 	public static Collection<Condition> getConditions() {return conditions.values();}
@@ -350,7 +354,5 @@ public class Census {
 	public static Action getSpell(String sp) {return spells.get(sp);}
 	public static HeroType getHeroType(String ht) {return heroTypes.get(ht);}
 	public static Creature getMonster(String m) {return new Creature(monsters.get(m));}
-	
-	
 }
 

@@ -27,27 +27,7 @@ public class Combat {
 	
 	private int roundNum;
 
-	private final int TICK = 1500;
-	
-	/*
-	 *  start of a battle:
-	 *  make data structure containing order of turns
-	 *  
-	 *  a person's turn:
-	 *  remove any conditions from their condition queue where the duration = 0	
-	 *  	cre.endStatus(c), where c is the condition whose duration has reached 0
-	 *  apply any other conditions they have:
-	 *  	for (Condition c : cre.getStatus()) {cre.sustainStatus(c);} *** this will also decrement the duration
-	 *  ask for an action
-	 *  apply the action
-	 *  go to next person's turn
-	 *  
-	 *  end of battle:
-	 *  expire any conditions on characters.
-	 *  restore hp/mp?
-	 *  grant experience
-	 *  
-	 */
+	private final int TICK = 1000;
 	
 	public Combat(Collection<Creature> heroTeam, Collection<Creature> enemyTeam) {
 		// Initialize data structures and values		
@@ -82,7 +62,8 @@ public class Combat {
 	
 	private boolean round() {
 		do {
-			Generator.delay(TICK);
+			//Generator.delay(TICK); / no longer needed, since delay happens ONLY for enemies, and in the turn method
+			//gui_bs.animate(combatants,2560); // just to watch animations
 		} while (!enemies.isEmpty() && !heroes.isEmpty() && turn());
 		
 		if (enemies.isEmpty() || heroes.isEmpty()) {
@@ -111,27 +92,27 @@ public class Combat {
 	private void takeTurn(Creature c) {
 		Creature rTarget = null;
 		Action rAction = null;
+		boolean enemyTurn = false;
 		if (c.getHp() > 0) {
 			for (Condition con : c.getStatus().keySet()) {sustainStatus(c,con);}
 			for (Condition con : c.getStatus().keySet()) {if (c.getStatusDuration(con) == 0) {endStatus(c,con);}}
 			if (heroes.contains(c)) {
 				// Hero prompt / choice here
 				Map<Creature,Action> rChoice = gui_bs.turnView(c);
-//				do {
-//					rAction = Generator.random(c.getActions());
-//				} while (rAction.getType() == Action.ActionType.SPELL && c.getMp() < rAction.getMpCost());
-//				while (rTarget == null) {rTarget = Generator.random(enemies);}
 				for (Creature tar : rChoice.keySet()) {rTarget = tar;}
 				for (Action actio : rChoice.values()) {rAction = actio;}
 				gui_bs.turnView();
 			} else {
 				// Enemy AI here
+				enemyTurn = true;
 				rAction = Generator.random(c.getActions());
 				while (rTarget == null) {rTarget = Generator.random(heroes);}						
 			}
 			incident(c,rAction,rTarget);
+			gui_bs.animate(c);
 			checkLife(c);
 			checkLife(rTarget);
+			if (enemyTurn) {Generator.delay(TICK);}
 		}
 	}
 	
@@ -157,6 +138,7 @@ public class Combat {
 			int xpEa = 0;
 			
 			setMessage("Hooray! The heroes are victorious!\n");
+			gui_bs.animate(heroes,12);
 			heroes.addAll(deadHeroes);
 			
 			for (Creature e : deadEnemies) {
@@ -178,13 +160,18 @@ public class Combat {
 			setMessage("Heroes receive " + gpEa + " gold pieces and earn " + xpEa + " experience points each.");
 			
 		}
-		else {setMessage("Alas, the heroes have fallen.\n");}
+		else {
+			setMessage("Alas, the heroes have fallen.\n");
+			gui_bs.animate(enemies,12);
+		}
 		
 		heroes.clear();
 		deadHeroes.clear();
 		enemies.clear();
 		deadEnemies.clear();
 		combatants.clear();
+		Generator.delay(TICK * 5);
+		gui_bs.dispose();
 	}
 	
 	private void incident(Creature actor, Action act, Creature target) {

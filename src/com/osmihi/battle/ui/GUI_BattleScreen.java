@@ -3,6 +3,7 @@ package com.osmihi.battle.ui;
 // http://stackoverflow.com/questions/1627028/how-to-set-auto-scrolling-of-jtextarea-in-java-gui
 // http://docs.oracle.com/javase/tutorial/uiswing/layout/box.html#alignment
 // http://docs.oracle.com/javase/tutorial/uiswing/layout/card.html
+// in-class program showing use of bitwise operator to determine odd/even
 
 import com.osmihi.battle.mechanics.*;
 import com.osmihi.battle.realm.*;
@@ -19,9 +20,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.*;
@@ -32,6 +32,8 @@ import javax.swing.border.TitledBorder;
 public class GUI_BattleScreen extends JFrame {
 	private static final long serialVersionUID = 1L;
 
+	private final int FRAME_RATE = 125;
+	
 	Combat bc;
 	
 	// Color theme
@@ -139,17 +141,46 @@ public class GUI_BattleScreen extends JFrame {
 		cardSet.show(bottomPanel, c.getName());
 		Map<Creature,Action> choice = new HashMap<Creature,Action>();
 		while (selectedTarget == null || selectedAction == null) {
-			Generator.delay(500);
+			Generator.delay(50);
 		}
 		choice.put(selectedTarget, selectedAction);
 		selectedTarget = null;
 		selectedAction = null;
-		for (TurnPanel tp : turnPanels.values()) {tp.resetTarget();}
+		for (TurnPanel tp : turnPanels.values()) {
+			tp.resetTarget();
+		}
 		return choice;
 	}
 	
 	public void turnView() {
 		cardSet.show(bottomPanel, "battleText");
+	}
+	
+	public void animate(Creature c, int rpt) {
+		if ((rpt & 1) != 0) {rpt++;} // make sure it's an even number of repeats
+		for (int i= 0; i < rpt; i++) {
+			if (creaturePanels.containsKey(c)) {creaturePanels.get(c).flip();}
+			if (turnPanels.containsKey(c)) {turnPanels.get(c).flip();}
+			Generator.delay(FRAME_RATE);
+		}
+	}
+	
+	public void animate(Creature c) {
+		animate(c,6);
+	}
+	
+	public void animate(Collection<Creature> col) {
+		animate(col, 6);
+	}
+	
+	public void animate(Collection<Creature> col, int rpt) {
+		for (int i = 0; i < rpt; i++) {
+			for (Creature c : col) {
+				if (creaturePanels.containsKey(c)) {creaturePanels.get(c).flip();}
+				if (turnPanels.containsKey(c)) {turnPanels.get(c).flip();}
+			}
+			Generator.delay(FRAME_RATE);
+		}
 	}
 	
 	public void battleText(String bt) {
@@ -164,7 +195,9 @@ public class GUI_BattleScreen extends JFrame {
 	private class CreaturePanel extends JPanel implements MouseListener {
 		private static final long serialVersionUID = 1L;
 		private Creature c;
-		private ImageIcon avatar;
+		JLabel pic;
+		private ImageIcon icon1;
+		private ImageIcon icon2;
 		
 		private JPanel stats;
 		
@@ -181,10 +214,12 @@ public class GUI_BattleScreen extends JFrame {
 		public CreaturePanel(Creature cre, boolean forHero) {
 			if (forHero) {valIndex = 0;} else {valIndex = 1;}
 			c = cre;
-			if (c.getImageFile() != null) {avatar = new ImageIcon(c.getImageFile());}
-			else {avatar = new ImageIcon("res/img/_blank.png");}
+			if (c.getImageFile() != null) {icon1 = new ImageIcon(c.getImageFile());}
+			else {icon1 = new ImageIcon("res/img/_blank.png");}
+			if (c.getImageAlt() != null) {icon2 = new ImageIcon(c.getImageAlt());}
+			else {icon2 = icon1;}
 			
-			JLabel pic = new JLabel(avatar);
+			pic = new JLabel(icon1);
 			
 			stats = makeStatsPanel();
 			
@@ -243,6 +278,10 @@ public class GUI_BattleScreen extends JFrame {
 			return sp;
 		}
 
+		public void flip() {
+			if (pic.getIcon() == icon1) {pic.setIcon(icon2);}
+			else {pic.setIcon(icon1);}
+		}		
 		@Override
 		public void mouseClicked(MouseEvent e) {}
 
@@ -268,6 +307,9 @@ public class GUI_BattleScreen extends JFrame {
 		private static final long serialVersionUID = 1L;
 		private Creature c;
 		private JPanel picPane;
+		private ImageIcon icon;
+		private ImageIcon icon2;
+		private JLabel picl;
 		private JPanel infoPane;
 		private JPanel targetPane;
 		private JPanel targetPics;
@@ -307,14 +349,16 @@ public class GUI_BattleScreen extends JFrame {
 		}
 		
 		private void makePicPane() {
-			ImageIcon icon;
 			if (c.getImageFile() != null) {icon = new ImageIcon(c.getImageFile());}
 			else {icon = new ImageIcon("res/img/_blank.png");}
+			if (c.getImageAlt() != null) {icon2 = new ImageIcon(c.getImageAlt());}
+			else {icon2 = icon;}
+			
 			
 			picPane = new JPanel();
 			picPane.setLayout(new BoxLayout(picPane, BoxLayout.Y_AXIS));
 						
-			JLabel picl = new JLabel(icon, JLabel.CENTER);
+			picl = new JLabel(icon, JLabel.CENTER);
 			picl.setAlignmentX(Component.CENTER_ALIGNMENT);
 			JLabel naml = new JLabel(c.getName(), JLabel.CENTER);
 			naml.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -421,6 +465,11 @@ public class GUI_BattleScreen extends JFrame {
 			tName.setText("");
 			tCards.show(targetPics, "blank");
 			tStat.setText("");
+		}
+		
+		public void flip() {
+			if (picl.getIcon() == icon) {picl.setIcon(icon2);}
+			else {picl.setIcon(icon);}
 		}
 	}
 }
