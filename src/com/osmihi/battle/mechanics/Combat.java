@@ -63,7 +63,7 @@ public class Combat {
 	private boolean round() {
 		do {
 			//Generator.delay(TICK); / no longer needed, since delay happens ONLY for enemies, and in the turn method
-			//gui_bs.animate(combatants,2560); // just to watch animations
+			//gui_bs.animate(combatants,2000); // just to watch animations
 		} while (!enemies.isEmpty() && !heroes.isEmpty() && turn());
 		
 		if (enemies.isEmpty() || heroes.isEmpty()) {

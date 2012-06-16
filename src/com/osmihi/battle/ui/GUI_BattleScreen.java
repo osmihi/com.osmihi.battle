@@ -31,7 +31,7 @@ import javax.swing.border.TitledBorder;
 public class GUI_BattleScreen extends GUI_GenericWindow {
 	private static final long serialVersionUID = 1L;
 
-	private final int FRAME_RATE = 125;
+	private final int FRAME_RATE = 150;
 	
 	Combat bc;
 	

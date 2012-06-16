@@ -1,5 +1,6 @@
 // references:
 // http://www.javamex.com/tutorials/threads/invokelater.shtml
+// http://stackoverflow.com/questions/2545214/how-to-set-a-transparent-background-of-jpanel
 
 package com.osmihi.battle.ui;
 
