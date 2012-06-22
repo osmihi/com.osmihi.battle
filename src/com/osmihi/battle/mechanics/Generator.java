@@ -1,8 +1,22 @@
+/*********************************************************************************************************
+ * Fantasy Adventure Game - by Othman Smihi
+ * ICS 240 - Metropolitan State University - Summer 2012
+ * 
+ * I pledge that the contents of this file represent my own work, except as noted below.
+ * References:
+ * http://stackoverflow.com/questions/4595836/get-a-random-element-from-a-sequential-collection
+ * http://www.java-forums.org/threads-synchronization/528-how-use-sleep-method.html 
+ *
+ * --------------
+ * Generator.java
+ * --------------
+ * Generator is a static-only utility class which is used in various places throughout the program to
+ * perform functions like generating random numbers to determine combat outcomes, pausing the program via
+ * the sleep() method, generating unique random IDs for some objects, and miscellaneous text formatting. 
+ * 
+ *********************************************************************************************************/
+
 package com.osmihi.battle.mechanics;
-//
-// References:
-// http://stackoverflow.com/questions/4595836/get-a-random-element-from-a-sequential-collection
-// http://www.java-forums.org/threads-synchronization/528-how-use-sleep-method.html
 
 import java.util.Collection;
 import java.util.Iterator;

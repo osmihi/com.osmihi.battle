@@ -1,9 +1,30 @@
+/*********************************************************************************************************
+ * Fantasy Adventure Game - by Othman Smihi
+ * ICS 240 - Metropolitan State University - Summer 2012
+ * 
+ * I pledge that the contents of this file represent my own work, except as noted below.
+ * References:
+ * http://stackoverflow.com/questions/1627028/how-to-set-auto-scrolling-of-jtextarea-in-java-gui
+ * http://docs.oracle.com/javase/tutorial/uiswing/layout/box.html#alignment
+ * http://docs.oracle.com/javase/tutorial/uiswing/layout/card.html
+ * in-class program showing use of bitwise operator to determine odd/even
+ *
+ * ----------------------
+ * GUI_BattleScreen.java
+ * ----------------------
+ * The BattleScreen is the most complicated part of the GUI currently. That being said, it still has a long
+ * way to go. It contains a handful of inner classes, which it may be beneficial to split up in the future
+ * as these things expand. In any case, this screen displays all the combatants on the hero team and on the
+ * enemy team, and the section where a user chooses their action & target each turn. Also, it animates the
+ * frames on heroes and enemies when they take their turns. Also, it contains a console-like text view that
+ * prints out battle details. I don't think this will be kept in the long run, since it will be much nicer
+ * to display these things graphically, but for the time being it is useful so we know what is happening
+ * during the battle. The instance of this screen is created inside of a Combat, which triggers its various
+ * public methods at different times corresponding to events in the battle.
+ * 
+ *********************************************************************************************************/
+
 package com.osmihi.battle.ui;
-// references:
-// http://stackoverflow.com/questions/1627028/how-to-set-auto-scrolling-of-jtextarea-in-java-gui
-// http://docs.oracle.com/javase/tutorial/uiswing/layout/box.html#alignment
-// http://docs.oracle.com/javase/tutorial/uiswing/layout/card.html
-// in-class program showing use of bitwise operator to determine odd/even
 
 import com.osmihi.battle.mechanics.*;
 import com.osmihi.battle.realm.*;

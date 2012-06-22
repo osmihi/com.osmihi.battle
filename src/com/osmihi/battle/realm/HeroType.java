@@ -1,5 +1,23 @@
-package com.osmihi.battle.realm;
+/*********************************************************************************************************
+ * Fantasy Adventure Game - by Othman Smihi
+ * ICS 240 - Metropolitan State University - Summer 2012
+ * 
+ * I pledge that the contents of this file represent my own work, except as noted below.
+ * References:
+ *
+ * --------------
+ * HeroType.java
+ * --------------
+ * The HeroType class contains fields for modifiers that will be applies to a particular Hero when it is
+ * created, and will store information about certain options available to a Hero when advancing a level.
+ * The HeroType determines the differences between the different types of characters. Some HeroTypes are
+ * stronger or faster than others, or have access to different Actions. HeroType also determines the 
+ * starting gold pieces a Hero will have. Each HeroType has a different set of images associated with it. 
+ * 
+ *********************************************************************************************************/
 
+
+package com.osmihi.battle.realm;
 
 import java.io.File;
 import java.util.ArrayList;

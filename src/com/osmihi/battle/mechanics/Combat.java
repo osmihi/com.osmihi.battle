@@ -1,8 +1,35 @@
+/*********************************************************************************************************
+ * Fantasy Adventure Game - by Othman Smihi
+ * ICS 240 - Metropolitan State University - Summer 2012
+ * 
+ * I pledge that the contents of this file represent my own work, except as noted below.
+ * References:
+ * http://stackoverflow.com/questions/683041/java-how-do-i-use-a-priorityqueue
+ *
+ * --------------
+ * Combat.java
+ * --------------
+ * The Combat class is in charge of combat-related functions for the battle portion of the game. When an
+ * instance of Combat is created, it is passed heroTeam and enemyTeam collections. The way that combat
+ * works is in a series of rounds, which consist of turns. Every round, "initiative" values are calculated
+ * for Creatures based on their speed attribute, determining the order in which they will take turns. Then
+ * each Creature takes its turn until the round is over, at which point a new round will begin again. This
+ * process repeats until all Creatures on either the heroTeam or the enemyTeam are killed (their hit points
+ * drop to 0). If the heroes win the battle, they are rewarded with the experience points (xp) and gold
+ * pieces (gp) of the defeated enemies. 
+ * 
+ * On a hero's turn, the player is prompted to choose a target and an action. If it is an enemy's turn, a 
+ * random target is chosen from the living heroes and a random action is chosen from that particular enemy's 
+ * available actions. When an action and target are determined, the incident() method is called and passed
+ * the attacker, action, and target. Inside this method, the success or failure of the action and any 
+ * damage, magic point cost, resulting conditions, etc are determined.
+ * 
+ * Throughout this process, various messages and information are sent to the battle GUI so it can display
+ * what is going on to the user.
+ * 
+ *********************************************************************************************************/
+
 package com.osmihi.battle.mechanics;
-//
-// References:
-// http://stackoverflow.com/questions/683041/java-how-do-i-use-a-priorityqueue
-//
 
 import com.osmihi.battle.realm.*;
 import com.osmihi.battle.ui.*;

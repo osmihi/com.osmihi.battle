@@ -1,6 +1,20 @@
-// references:
-// http://www.javamex.com/tutorials/threads/invokelater.shtml
-// http://stackoverflow.com/questions/2545214/how-to-set-a-transparent-background-of-jpanel
+/*********************************************************************************************************
+ * Fantasy Adventure Game - by Othman Smihi
+ * ICS 240 - Metropolitan State University - Summer 2012
+ * 
+ * I pledge that the contents of this file represent my own work, except as noted below.
+ * References:
+ * http://www.javamex.com/tutorials/threads/invokelater.shtml
+ * http://stackoverflow.com/questions/2545214/how-to-set-a-transparent-background-of-jpanel
+ * 
+ * -------------------
+ * GUI_MainScreen.java
+ * -------------------
+ * This class is the opening GUI screen of the game. It is basically just a gateway to the other screens
+ * in the game. It includes buttons to access the other screens and methods to create instances of those
+ * screens and access them.
+ * 
+ *********************************************************************************************************/
 
 package com.osmihi.battle.ui;
 
@@ -93,8 +107,4 @@ public class GUI_MainScreen extends GUI_GenericWindow {
 		}
 	}
 	
-	public static void main(String[] args) {
-		Game game = new Game();
-		GUI_MainScreen gui_ms = new GUI_MainScreen(game);
-	}
 }

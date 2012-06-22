@@ -1,3 +1,22 @@
+/*********************************************************************************************************
+ * Fantasy Adventure Game - by Othman Smihi
+ * ICS 240 - Metropolitan State University - Summer 2012
+ * 
+ * I pledge that the contents of this file represent my own work, except as noted below.
+ * References:
+ * 
+ * ----------------------
+ * GUI_GenericWindow.java
+ * ----------------------
+ * This class is an abstract superclass for the other GUI screens used in the game. It sets up some default
+ * formatting options, including a color palette, and specifies that each subclass will have a method named
+ * populateWindow() to fill it up with the UI components. As other features that will be common to all
+ * screens are added in the future, such as a title or menu bar, volume control, etc, they can be added here
+ * rather than trying to implement on every single screen individually.
+ * 
+ *********************************************************************************************************/
+
+
 package com.osmihi.battle.ui;
 
 import java.awt.BorderLayout;

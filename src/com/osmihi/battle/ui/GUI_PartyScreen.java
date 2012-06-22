@@ -1,3 +1,19 @@
+/*********************************************************************************************************
+ * Fantasy Adventure Game - by Othman Smihi
+ * ICS 240 - Metropolitan State University - Summer 2012
+ * 
+ * I pledge that the contents of this file represent my own work, except as noted below.
+ * References:
+ * 
+ * -------------------
+ * GUI_PartyScreen.java
+ * -------------------
+ * This class is the GUI screen of the game where users assemble a battle party consisting of some of
+ * the characters that they've created. Right now it's just a stub basically, since characted creation is
+ * not implemented yet.  
+ * 
+ *********************************************************************************************************/
+
 package com.osmihi.battle.ui;
 
 import java.awt.BorderLayout;

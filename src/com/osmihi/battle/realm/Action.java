@@ -1,5 +1,27 @@
-package com.osmihi.battle.realm;
+/*********************************************************************************************************
+ * Fantasy Adventure Game - by Othman Smihi
+ * ICS 240 - Metropolitan State University - Summer 2012
+ * 
+ * I pledge that the contents of this file represent my own work, except as noted below.
+ * References:
+ *
+ * --------------
+ * Action.java
+ * --------------
+ * The Action class represents an action taken by a Creature during a battle. It can be one of three
+ * categories: ATTACK, SKILL, or SPELL. These labels are mostly for organizational purposes, since all three
+ * operate in the same way, which is why we use one Action class rather than subclassing for each type. In
+ * the future, if this is needed, we could make Action an abstract superclass and add functionality that
+ * is specific to each type in its subclass. In any case, an action has fields that determine its chance of 
+ * success, its cost in magic points, minimum and maximum damage, and a Condition that will affect the target
+ * if the Action hits and passes a second check on its statusChance. Also, there are a couple String fields
+ * that determine certain words to be used in messages displayed to the user during battle. These are 
+ * initialized with default values for each ActionType, but can be overwritten for individual Actions, if
+ * so desired. 
+ * 
+ *********************************************************************************************************/
 
+package com.osmihi.battle.realm;
 
 // The action class applies to Attacks, Skills, and Spells
 

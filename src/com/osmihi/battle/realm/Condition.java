@@ -1,3 +1,22 @@
+/*********************************************************************************************************
+ * Fantasy Adventure Game - by Othman Smihi
+ * ICS 240 - Metropolitan State University - Summer 2012
+ * 
+ * I pledge that the contents of this file represent my own work, except as noted below.
+ * References:
+ *
+ * --------------
+ * Condition.java
+ * --------------
+ * A Condition is an object that gets stored in a Creatures status collection, and will cause certain
+ * helpful or detrimental effects on that creature for some amount of time. These effects can be bonuses
+ * or penalties to the Creature's attributes and hp or mp. In the future I'd like to add the ability for
+ * a condition to add or remove an action to a Creature for its duration, or for it to add or remove 
+ * an immunity to a condition to a Creature.
+ *  
+ *********************************************************************************************************/
+
+
 package com.osmihi.battle.realm;
 
 

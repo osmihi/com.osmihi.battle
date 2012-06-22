@@ -1,3 +1,25 @@
+/*********************************************************************************************************
+ * Fantasy Adventure Game - by Othman Smihi
+ * ICS 240 - Metropolitan State University - Summer 2012
+ * 
+ * I pledge that the contents of this file represent my own work, except as noted below.
+ * References:
+ *
+ * --------------
+ * Hero.java
+ * --------------
+ * The Hero class is a subclass of creature, which is used for player characters in the game. The 
+ * features that are added for a Hero are HeroType, level and xp. After a battle, heroes are
+ * awarded xp (experience points) and in the future I will implement that when the experience points pass
+ * certain thresholds, the hero will gain a level and its attributes will increase and the user will have
+ * the chance to choose new actions for it. 
+ * 
+ * The HeroType is like a template for a Hero. The HeroType's values are applied to a Hero when it is
+ * created, and will affect options that will be available when the Hero gains a level. More info about
+ * HeroType can be found in the header for that class.
+ * 
+ *********************************************************************************************************/
+
 package com.osmihi.battle.realm;
 
 import com.osmihi.battle.mechanics.*;

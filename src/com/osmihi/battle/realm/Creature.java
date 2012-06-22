@@ -1,5 +1,22 @@
-//references:
-// http://stackoverflow.com/questions/1816673/how-do-i-check-if-a-file-exists-java-on-windows
+/*********************************************************************************************************
+ * Fantasy Adventure Game - by Othman Smihi
+ * ICS 240 - Metropolitan State University - Summer 2012
+ * 
+ * I pledge that the contents of this file represent my own work, except as noted below.
+ * References:
+ * http://stackoverflow.com/questions/1816673/how-do-i-check-if-a-file-exists-java-on-windows
+ *
+ * --------------
+ * Creature.java
+ * --------------
+ * The Creature class is used to represent the monsters that heroes fight in the game. Heroes are also 
+ * Creatures, but they have their own subclass. Each Creature has a unique id number to differentiate 
+ * between multiple instances of the same Creature in a battle. A Creature has various attributes which
+ * affect its performance in combat, lists of Conditions that are currently affecting it or that it is
+ * immnune to, a list of actions that are available to it during a combat turn, and locations for image
+ * files that will be shown in the GUI.
+ * 
+ *********************************************************************************************************/
 
 package com.osmihi.battle.realm;
 

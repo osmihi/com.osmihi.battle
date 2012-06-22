@@ -1,3 +1,20 @@
+/*********************************************************************************************************
+ * Fantasy Adventure Game - by Othman Smihi
+ * ICS 240 - Metropolitan State University - Summer 2012
+ * 
+ * I pledge that the contents of this file represent my own work, except as noted below.
+ * References:
+ * 
+ * -------------------
+ * GUI_CharScreen.java
+ * -------------------
+ * This class is the GUI screen of the game where users create new Heroes. Right now it just creates  
+ * some pre-fab hard-coded heroes, since character creation is not implemented yet. In the future, it will
+ * display information like a Hero's attributes and actions etc, to be used when creating or leveling up
+ * a Hero.  
+ * 
+ *********************************************************************************************************/
+
 package com.osmihi.battle.ui;
 
 import java.awt.GridLayout;

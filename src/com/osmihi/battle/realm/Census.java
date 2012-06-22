@@ -1,3 +1,27 @@
+/*********************************************************************************************************
+ * Fantasy Adventure Game - by Othman Smihi
+ * ICS 240 - Metropolitan State University - Summer 2012
+ * 
+ * I pledge that the contents of this file represent my own work, except as noted below.
+ * References:
+ * Michael Dorin's suggestion to use Hashtables to store the objects created in the Census class.
+ *
+ * --------------
+ * Census.java
+ * --------------
+ * Census is a static-only class that instantiates and holds various objects that inhabit the realm of the 
+ * game. These can be thought of as the definitions for the different types of heroes, monsters, actions,
+ * and status conditions. The static method populate() creates all the instances of these various objects,
+ * which are then accessible via the various getter methods.
+ * 
+ * As you can see, right now these definitions are all hard-coded into the populate() method. In the future,
+ * I'd like to store this information in one or more xml files and then simply have the populate method
+ * create instances for each. This would make it easier to maintain, and would enable other people to create
+ * new actions and monsters without requiring them to directly access the program code.
+ * 
+ *********************************************************************************************************/
+
+
 package com.osmihi.battle.realm;
 /**************************************************************************************************
  * Census.java
@@ -15,7 +39,7 @@ public class Census {
 	// The Census class instantiates all the hero types, creature types, and actions. 
 	// Is it better to divide this up and put into static methods in the corresponding class defs?
 	// for example, HeroType.getHeroTypeList(), HeroType.getHeroType(), or maybe just HeroType.ARCHER, etc
-	// that almost makes more sense...
+	// maybe, maybe not....
 	
 	private static Hashtable<String,Condition> conditions = new Hashtable<String,Condition>();
 	private static Hashtable<String,Action> actions = new Hashtable<String,Action>();
