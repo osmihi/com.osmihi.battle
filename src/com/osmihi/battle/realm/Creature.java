@@ -21,13 +21,16 @@
 package com.osmihi.battle.realm;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.osmihi.battle.mechanics.Generator;
 
-public class Creature {
+public class Creature implements Serializable {
+	private static final long serialVersionUID = 4757472081568265565L;
+
 	private Long id;
 	
 	protected String name;

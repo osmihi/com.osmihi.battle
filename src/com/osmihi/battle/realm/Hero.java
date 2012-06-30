@@ -25,6 +25,8 @@ package com.osmihi.battle.realm;
 import com.osmihi.battle.mechanics.*;
 
 public class Hero extends Creature {
+	private static final long serialVersionUID = 4196793760598389670L;
+	
 	private HeroType heroType;
 	private int level;
 	private int xp;
@@ -37,6 +39,7 @@ public class Hero extends Creature {
 		xp = 0;
 		
 		applyHeroType();
+		randomMod();
 	}
 	
 	private void applyHeroType() {
@@ -53,6 +56,18 @@ public class Hero extends Creature {
 		immunities = heroType.getImmunities();
 		setImageFile(heroType.getImageFile());
 		setImageAlt(heroType.getImageAlt());
+	}
+	
+	private void randomMod() {
+		strength += ( Generator.random(3) - Generator.random(3) ); 
+		intelligence += ( Generator.random(3) - Generator.random(3) );
+		speed += ( Generator.random(3) - Generator.random(3) );
+		defense += ( Generator.random(3) - Generator.random(3) );
+		offense += ( Generator.random(3) - Generator.random(3) );
+		maxHp += ( Generator.random(heroType.getHpUnit()/3) - Generator.random(heroType.getHpUnit()/3) );
+		maxMp += ( Generator.random(heroType.getMpUnit()/3) - Generator.random(heroType.getMpUnit()/3) );
+		hp = maxHp;
+		mp = maxMp;
 	}
 	
 	@Override

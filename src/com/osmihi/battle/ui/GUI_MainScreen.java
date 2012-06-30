@@ -96,13 +96,11 @@ public class GUI_MainScreen extends GUI_GenericWindow {
 				gui_ps.dispose();
 
 				//do the battle!
-				Thread battleThread = new Thread() {
+				new Thread(new Runnable() {
 					public void run() {
-				    	  Combat bc = new Combat(game.getHeroTeam(), game.getEnemyTeam());
-				      }
-				};
-				battleThread.start();
-				
+						Combat bc = new Combat(game.getHeroTeam(), game.getEnemyTeam());
+					}	
+				}).start();		
 			} else {System.out.println("Create party first.");}
 		}
 	}

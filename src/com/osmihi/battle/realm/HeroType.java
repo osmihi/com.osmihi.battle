@@ -42,8 +42,7 @@ public class HeroType {
 	// TODO add data structure for actions.
 	// private /**/ actions;
 	// actions at levels -- hashmap?
-	// private HashMap<Integer, ArrayList<Action>> actionTable;
-	// Actually, what we should do is have a linked list or tree!
+	// 	// Actually, what we should do is have a tree!
 	// Each heroType has an 'entry-level' action with no pre-reqs,
 	// then each after that has one or more pre-reqs, etc.... some kind of tree
 
