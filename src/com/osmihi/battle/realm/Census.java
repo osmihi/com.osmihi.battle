@@ -388,6 +388,10 @@ public class Census {
 		monsters.get("Ogre").addAction(spells.get("Slow"));
 		//monsters.get("Ogre").setImageFile("res/img/Ogre.png");
 		//monsters.get("Ogre").setImageAlt("res/img/Ogre2.png");
+		
+		actions.putAll(attacks);
+		actions.putAll(skills);
+		actions.putAll(spells);
 	}
 
 	public static Collection<Condition> getConditions() {return conditions.values();}

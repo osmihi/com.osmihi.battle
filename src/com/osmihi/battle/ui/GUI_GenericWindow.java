@@ -39,19 +39,23 @@ public abstract class GUI_GenericWindow extends JFrame {
 	};
 	
 	protected JPanel mainPanel;
-		
+	protected JPanel fill;
+	
 	public GUI_GenericWindow() {
 		mainPanel = new JPanel();
 		mainPanel.setPreferredSize(new Dimension(720,600));
 		mainPanel.setLayout(new BorderLayout(10,10));
 		mainPanel.setBorder(new LineBorder(colors[2],4));
 		mainPanel.setBackground(colors[3]);
+		fill = new JPanel();
+		fill.setBackground(colors[3]);
 		
 		add(mainPanel);
 		pack();
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		populateWindow();
+		setResizable(false);
 		setVisible(true);
 	}
 	

@@ -5,7 +5,8 @@
  * I pledge that the contents of this file represent my own work, except as noted below.
  * References:
  * http://stackoverflow.com/questions/5328405/jpanel-padding-in-java
- * 
+ * http://docs.oracle.com/javase/1.4.2/docs/api/javax/swing/border/TitledBorder.html
+ * http://stackoverflow.com/questions/668952/clearest-way-to-comma-delimit-a-list-java
  * -------------------
  * GUI_CharScreen.java
  * -------------------
@@ -25,29 +26,24 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
+import javax.swing.border.TitledBorder;
 
 import com.osmihi.battle.game.Game;
 import com.osmihi.battle.mechanics.Generator;
 import com.osmihi.battle.realm.Census;
-import com.osmihi.battle.realm.Creature;
+import com.osmihi.battle.realm.Condition;
 import com.osmihi.battle.realm.Hero;
 import com.osmihi.battle.realm.HeroType;
 
@@ -65,6 +61,7 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 	private JPanel charPanel;
 	private JPanel headerPanel;
 	private JPanel midPanel;
+	private JPanel footerPanel;
 	private JPanel ctrlPanel;
 	
 	private JPanel picPanel;
@@ -73,6 +70,7 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 	private JTextField heroName;
 	private JTextField heroLvl;
 	private JComboBox<String> htChoice;
+	private ArrayList<String> alphabetic;
 	
 	StatRow hpRow;
 	StatRow mpRow;
@@ -86,6 +84,9 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 	StatRow offRow;
 	StatRow defRow;
 	
+	private JTextArea statusList;
+	private JTextArea immunityList;
+	
 	public GUI_CharScreen(Game g) {
 		super();
 		game = g;
@@ -97,9 +98,11 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 	
 		makeCharPanel();
 		makeCtrlPanel();
-
+		fill.setBackground(colors[2]);
+		
 		mainPanel.setLayout(new BorderLayout(0,0));
 		mainPanel.add(charPanel, BorderLayout.WEST);
+		mainPanel.add(fill, BorderLayout.CENTER);
 		mainPanel.add(ctrlPanel, BorderLayout.EAST);
 	}
 	
@@ -107,6 +110,7 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 		if (newHero == null) {return;}
 		
 		heroName.setText(newHero.getName());
+		heroLvl.setText("Level " + newHero.getLevel());
 		pCards.show(picPanel, newHero.getHeroType().getName());
 		
 		hpRow.setValue(newHero.getHp() + " / " + newHero.getMaxHp());
@@ -120,6 +124,20 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 		spdRow.setValue(newHero.getSpeed());
 		offRow.setValue(newHero.getOffense());
 		defRow.setValue(newHero.getDefense());
+		
+		statusList.setText("");
+		String delim = "";
+		for (Condition c : newHero.getStatus().keySet()) {
+			statusList.append(delim + c.getName() + "(" + newHero.getStatusDuration(c) + ")");
+			delim = ", ";
+		}
+		
+		immunityList.setText("");
+		delim = "";
+		for (Condition c : newHero.getImmunities()) {
+			immunityList.append(delim + c.getName());
+			delim = ", ";
+		}
 	}
 	
 	private void makeCharPanel() {
@@ -132,11 +150,8 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 		// note: makeCharMiddle() must be called before makeCharHeader()
 		// this is because the drop-down calls refresh, and refresh references the StatRows, which are null until makeCharMiddle() is called.
 		makeCharMiddle();
+		makeCharFooter();
 		makeCharHeader();
-		
-		JPanel footerPanel = new JPanel();
-		footerPanel.setPreferredSize(new Dimension(480,230));
-		footerPanel.setOpaque(false);
 		
 		charPanel.add(headerPanel, BorderLayout.NORTH);
 		charPanel.add(midPanel, BorderLayout.CENTER);
@@ -159,7 +174,7 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 		JPanel infoPanel = new JPanel();
 		infoPanel.setOpaque(false);
 		infoPanel.setPreferredSize(new Dimension(310,150));
-		infoPanel.setBorder(new EmptyBorder(20,5,0,25));
+		infoPanel.setBorder(new EmptyBorder(20,5,0,15));
 		infoPanel.setLayout(new GridLayout(3,1,4,4));
 		
 		heroName = new JTextField(" ");
@@ -180,21 +195,14 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 			public void keyReleased(KeyEvent e) {newHero.setName(((JTextField)e.getSource()).getText());}
 		});
 		
-		heroLvl = new JTextField("Level 1");
+		heroLvl = new JTextField(" ");
 		heroLvl.setBorder(new EmptyBorder(0,2,6,2));
 		heroLvl.setOpaque(false);
 		heroLvl.setEditable(false);
 		heroLvl.setFont(new Font("Verdana",Font.PLAIN,18));
 		heroLvl.setHorizontalAlignment(JTextField.LEFT);
 		
-		JButton nameBtn = new JButton("New Name");
-		nameBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				newHero.setName(Generator.generateName());
-				refresh();
-			}
-		});
+		JButton nameBtn = new JButton("Generate");
 		
 		JPanel headMidPanel = new JPanel();
 		headMidPanel.setOpaque(false);
@@ -216,13 +224,22 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 			}
 		});
 		
-		ArrayList<String> alphabetic = new ArrayList<String>();
+		alphabetic = new ArrayList<String>();
 		for (HeroType ht : Census.getHeroTypes()) {
 			picPanel.add(new Avatar(ht, true), ht.getName());
 			alphabetic.add(ht.getName());
 		}
 		Collections.sort(alphabetic);
 		for (String s : alphabetic) {htChoice.addItem(s);}
+		
+		nameBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				htChoice.setSelectedItem(Generator.random(alphabetic));
+				newHero.setName(Generator.generateName());
+				refresh();
+			}
+		});
 		
 		infoPanel.add(heroName);
 		infoPanel.add(headMidPanel);
@@ -236,7 +253,7 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 		midPanel = new JPanel();
 		midPanel.setPreferredSize(new Dimension(480,220));
 		midPanel.setOpaque(false);
-		midPanel.setBorder(new EmptyBorder(20,0,0,20));
+		midPanel.setBorder(new EmptyBorder(20,0,0,12));
 		
 		hpRow = new StatRow("Hit Points",0,true);
 		mpRow = new StatRow("Magic Points",0,true);
@@ -253,13 +270,13 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 		JPanel lStats = new JPanel();
 		lStats.setOpaque(false);
 		lStats.setLayout(new BoxLayout(lStats, BoxLayout.Y_AXIS));
-		lStats.setPreferredSize(new Dimension(160,180));
+		lStats.setPreferredSize(new Dimension(165,180));
 		lStats.setBorder(new EmptyBorder(0,0,0,20));
 		
 		JPanel rStats = new JPanel();
 		rStats.setOpaque(false);
 		rStats.setLayout(new BoxLayout(rStats, BoxLayout.Y_AXIS));
-		rStats.setPreferredSize(new Dimension(280,180));
+		rStats.setPreferredSize(new Dimension(275,180));
 		rStats.setBorder(new EmptyBorder(0,0,0,10));
 		
 		rStats.add(hpRow);
@@ -276,6 +293,55 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 		
 		midPanel.add(lStats, BorderLayout.WEST);
 		midPanel.add(rStats, BorderLayout.EAST);
+	}
+	
+	private void makeCharFooter() {
+		footerPanel = new JPanel();
+		footerPanel.setPreferredSize(new Dimension(480,230));
+		footerPanel.setLayout(new BorderLayout());
+		footerPanel.setOpaque(false);
+		footerPanel.setBorder(new EmptyBorder(5,5,5,5));
+		
+		JPanel statusPanel = new JPanel();
+		statusPanel.setBorder(new TitledBorder(new LineBorder(colors[2],1),"Status",TitledBorder.RIGHT,TitledBorder.CENTER));
+		statusPanel.setOpaque(false);
+		statusPanel.setLayout(new BorderLayout());
+		statusList = new JTextArea(" ");
+		statusList.setOpaque(false);
+		statusList.setEditable(false);
+		statusList.setLineWrap(true);
+		statusList.setWrapStyleWord(true);
+		statusList.setFont(new Font("Verdana",Font.PLAIN,10));
+		statusPanel.add(statusList, BorderLayout.CENTER);
+		
+		JPanel immunityPanel = new JPanel();
+		immunityPanel.setBorder(new TitledBorder(new LineBorder(colors[2],1),"Immunities",TitledBorder.RIGHT,TitledBorder.CENTER));
+		immunityPanel.setOpaque(false);
+		immunityPanel.setLayout(new BorderLayout());
+		immunityList = new JTextArea(" ");
+		immunityList.setOpaque(false);
+		immunityList.setEditable(false);
+		immunityList.setLineWrap(true);
+		immunityList.setWrapStyleWord(true);
+		immunityList.setFont(new Font("Verdana",Font.PLAIN,10));
+		immunityPanel.add(immunityList, BorderLayout.CENTER);
+		
+		JPanel conditionPanel = new JPanel();
+		conditionPanel.setOpaque(false);
+		conditionPanel.setPreferredSize(new Dimension(160,220));
+		conditionPanel.setLayout(new GridLayout(0,1,0,0));
+		//conditionPanel.setBorder(new EmptyBorder(5,5,5,5));
+		conditionPanel.add(statusPanel, BorderLayout.NORTH);
+		conditionPanel.add(immunityPanel, BorderLayout.SOUTH);
+		
+		JPanel actionsPanel = new JPanel();
+		actionsPanel.setBorder(new TitledBorder(new LineBorder(colors[2],1),"Actions",TitledBorder.RIGHT,TitledBorder.CENTER));
+		actionsPanel.setOpaque(false);
+		actionsPanel.setPreferredSize(new Dimension(300,220));
+		
+		
+		footerPanel.add(conditionPanel, BorderLayout.WEST);
+		footerPanel.add(actionsPanel, BorderLayout.EAST);
 	}
 	
 	private class StatRow extends JPanel {
@@ -376,7 +442,7 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 		
 		btn1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//makeChars();
+				makeChars();
 				btn1.setEnabled(false);
 				btn2.setEnabled(true);
 				btn3.setEnabled(true);

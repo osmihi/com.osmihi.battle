@@ -45,7 +45,9 @@ public class HeroType {
 	// 	// Actually, what we should do is have a tree!
 	// Each heroType has an 'entry-level' action with no pre-reqs,
 	// then each after that has one or more pre-reqs, etc.... some kind of tree
-
+	//private ActionTree atr;
+	
+	
 	private String imageFile;
 	private String imageAlt;
 
