@@ -21,19 +21,10 @@
  * 
  *********************************************************************************************************/
 
-
 package com.osmihi.battle.realm;
-/**************************************************************************************************
- * Census.java
- * 
- * ref:
- * - Instructor Dorin suggested I use Hashtables to store the various Creatures, etc 
- * 
- **************************************************************************************************/
 
 import java.util.Collection;
 import java.util.Hashtable;
-
 
 public class Census {
 	// The Census class instantiates all the hero types, creature types, and actions. 
