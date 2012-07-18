@@ -83,7 +83,6 @@ public class Census {
 		conditions.get("Hide").setDefenseMod(50);
 		conditions.get("Hide").setDuration(1);
 		
-		
 		// Actions
 		// Attacks, Skills, Spells
 		actions.putAll(attacks);
@@ -229,6 +228,7 @@ public class Census {
 		
 		
 		// HeroTypes
+		// TODO Create actionTrees for each HeroType.
 		heroTypes.put("Barbarian", new HeroType("Barbarian"));
 		heroTypes.get("Barbarian").setStrengthMod(10);
 		heroTypes.get("Barbarian").setIntelligenceMod(-5);
@@ -240,7 +240,8 @@ public class Census {
 		heroTypes.get("Barbarian").setGp(20);
 		heroTypes.get("Barbarian").addImmunity(conditions.get("Poison"));
 //		add actions here
-		//heroTypes.get("Barbarian").setImageFile("res/img/Barbarian.png");
+		heroTypes.get("Barbarian").setStartingActionPoints(2);
+
 		
 		heroTypes.put("Archer", new HeroType("Archer"));
 		heroTypes.get("Archer").setStrengthMod(0);
@@ -253,7 +254,7 @@ public class Census {
 		heroTypes.get("Archer").setGp(80);
 //		heroTypes.get("Archer").addImmunity(conditionToAdd);
 //		add actions here
-		//heroTypes.get("Archer").setImageFile("res/img/Archer.png");
+		heroTypes.get("Archer").setStartingActionPoints(3);
 		
 		heroTypes.put("Ninja", new HeroType("Ninja"));
 		heroTypes.get("Ninja").setStrengthMod(0);
@@ -266,7 +267,7 @@ public class Census {
 		heroTypes.get("Ninja").setGp(60);
 //		heroTypes.get("Ninja").addImmunity(conditionToAdd);
 //		add actions here
-		//heroTypes.get("Ninja").setImageFile("res/img/Ninja.png");
+		heroTypes.get("Ninja").setStartingActionPoints(3);
 		
 		heroTypes.put("Thief", new HeroType("Thief"));
 		heroTypes.get("Thief").setStrengthMod(-6);
@@ -279,7 +280,7 @@ public class Census {
 		heroTypes.get("Thief").setGp(200);
 //		heroTypes.get("Thief").addImmunity(conditionToAdd);
 //		add actions here
-		//heroTypes.get("Thief").setImageFile("res/img/Thief.png");
+		heroTypes.get("Thief").setStartingActionPoints(5);
 		
 		heroTypes.put("Knight", new HeroType("Knight"));
 		heroTypes.get("Knight").setStrengthMod(10);
@@ -292,7 +293,7 @@ public class Census {
 		heroTypes.get("Knight").setGp(100);
 //		heroTypes.get("Knight").addImmunity(conditionToAdd);
 //		add actions here
-		//heroTypes.get("Knight").setImageFile("res/img/Knight.png");
+		heroTypes.get("Knight").setStartingActionPoints(2);
 
 		heroTypes.put("Wizard", new HeroType("Wizard"));
 		heroTypes.get("Wizard").setStrengthMod(-7);
@@ -305,7 +306,7 @@ public class Census {
 		heroTypes.get("Wizard").setGp(120);
 //		heroTypes.get("Wizard").addImmunity(conditionToAdd);
 //		add actions here
-		//heroTypes.get("Wizard").setImageFile("res/img/Wizard.png");
+		heroTypes.get("Wizard").setStartingActionPoints(4);
 
 		// Monsters
 		monsters.put("Wolf", new Creature("Wolf"));

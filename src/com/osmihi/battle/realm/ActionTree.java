@@ -26,11 +26,14 @@ public class ActionTree {
 	private ActionTreeNode root;
 	
 	public ActionTree(Action rt) {
-		if (rt == null) {throw new IllegalArgumentException("Can't have null as root.");}
 		ActionTreeNode newNode = new ActionTreeNode(rt);
 		root = newNode;
 	}
 
+	public ActionTree() {
+		root = null;
+	}
+	
 	public ActionTreeNode locate(Action toFind) {
 		return locate(root, toFind);
 	}

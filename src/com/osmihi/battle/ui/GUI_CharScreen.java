@@ -46,6 +46,7 @@ import com.osmihi.battle.realm.Census;
 import com.osmihi.battle.realm.Condition;
 import com.osmihi.battle.realm.Hero;
 import com.osmihi.battle.realm.HeroType;
+import com.osmihi.battle.realm.Action;
 
 public class GUI_CharScreen extends GUI_GenericWindow {
 	private static final long serialVersionUID = -7107347498741097308L;
@@ -63,6 +64,8 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 	private JPanel midPanel;
 	private JPanel footerPanel;
 	private JPanel ctrlPanel;
+
+	private JPanel actionsPanel;
 	
 	private JPanel picPanel;
 	private CardLayout pCards;
@@ -86,6 +89,8 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 	
 	private JTextArea statusList;
 	private JTextArea immunityList;
+	private JTextArea actionList;
+	private JTextArea availList;
 	
 	public GUI_CharScreen(Game g) {
 		super();
@@ -138,6 +143,23 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 			immunityList.append(delim + c.getName());
 			delim = ", ";
 		}
+		
+		actionList.setText("");
+		delim = "";
+		actionList.append("Action Points: " + newHero.getActionPoints() + "\nKnown Actions: ");
+		for (Action a : newHero.getActions()) {
+			actionList.append(delim + a.getName());
+			delim = ", ";
+		}
+		
+		availList.setText("");
+		delim = "";
+		availList.append("Available Actions: ");
+		for (Action a : newHero.getAvailableActions()) {
+			availList.append(delim + a.getName());
+			delim = ", ";
+		}
+		
 	}
 	
 	private void makeCharPanel() {
@@ -334,14 +356,40 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 		conditionPanel.add(statusPanel, BorderLayout.NORTH);
 		conditionPanel.add(immunityPanel, BorderLayout.SOUTH);
 		
-		JPanel actionsPanel = new JPanel();
+		makeActionsPanel();
+		
+		footerPanel.add(conditionPanel, BorderLayout.WEST);
+		footerPanel.add(actionsPanel, BorderLayout.EAST);
+	}
+	
+	private void makeActionsPanel() {
+		actionsPanel = new JPanel();
 		actionsPanel.setBorder(new TitledBorder(new LineBorder(colors[2],1),"Actions",TitledBorder.RIGHT,TitledBorder.CENTER));
 		actionsPanel.setOpaque(false);
 		actionsPanel.setPreferredSize(new Dimension(300,220));
 		
+		JPanel apLeft = new JPanel();
+		apLeft.setOpaque(false);
+		availList = new JTextArea(" ");
+		availList.setOpaque(false);
+		availList.setEditable(false);
+		availList.setLineWrap(true);
+		availList.setWrapStyleWord(true);
+		availList.setFont(new Font("Verdana",Font.PLAIN,10));
+		apLeft.add(availList, BorderLayout.CENTER);
 		
-		footerPanel.add(conditionPanel, BorderLayout.WEST);
-		footerPanel.add(actionsPanel, BorderLayout.EAST);
+		JPanel apRight = new JPanel();
+		apRight.setOpaque(false);
+		actionList = new JTextArea(" ");
+		actionList.setOpaque(false);
+		actionList.setEditable(false);
+		actionList.setLineWrap(true);
+		actionList.setWrapStyleWord(true);
+		actionList.setFont(new Font("Verdana",Font.PLAIN,10));
+		apRight.add(actionList, BorderLayout.CENTER);
+		
+		actionsPanel.add(apLeft, BorderLayout.WEST);
+		actionsPanel.add(apRight, BorderLayout.EAST);
 	}
 	
 	private class StatRow extends JPanel {

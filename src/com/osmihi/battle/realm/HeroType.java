@@ -39,14 +39,10 @@ public class HeroType {
 	
 	private ArrayList<Condition> immunities;
 
-	// TODO add data structure for actions.
-	// private /**/ actions;
-	// actions at levels -- hashmap?
-	// 	// Actually, what we should do is have a tree!
-	// Each heroType has an 'entry-level' action with no pre-reqs,
-	// then each after that has one or more pre-reqs, etc.... some kind of tree
-	//private ActionTree atr;
-	
+	// The ActionTree defines which Actions are available to the HeroType, and in what order they may gain them. When the player
+	// gains new actions, they may only choose from Actions that are children of an Action they already know from the ActionTree.
+	private ActionTree actionTree;
+	private int startingActionPoints;
 	
 	private String imageFile;
 	private String imageAlt;
@@ -62,8 +58,11 @@ public class HeroType {
 		hpUnit = 4;
 		mpUnit = 4;
 		gp = 20;
+		setStartingActionPoints(0);
 		immunities = new ArrayList<Condition>();	
-		//actions = new /**/;
+		
+		setActionTree(null);
+
 		File f = new File("res/img/Creature/" + getName() + "/icon.png");
 		if (f.exists()) {imageFile = "res/img/Creature/" + getName() + "/icon.png";}
 		f = new File("res/img/Creature/" + getName() + "/action.png");
@@ -81,15 +80,13 @@ public class HeroType {
 	public int getMpUnit() {return mpUnit;}
 	public int getGp() {return gp;}
 	public ArrayList<Condition> getImmunities() {return immunities;}
+	public ActionTree getActionTree() {return actionTree;}
+	public int getStartingActionPoints() {return startingActionPoints;}
+	
 	public String getImageFile() {return imageFile;}
 	public String getImageAlt() {return imageAlt;}
 
-	public void setImageFile(String f) {imageFile = f;}
-	public void setImageAlt(String f) {imageAlt = f;}
-
 	public boolean isImmune(Condition conditionToCheck) {return immunities.contains(conditionToCheck);}
-	//	public /**/ getActions() {}
-	//	public boolean hasAction() {}
 	
 	// "Setter" methods
 	public void setName(String name) {this.name = name;}
@@ -104,10 +101,12 @@ public class HeroType {
 	public void setImmunities(ArrayList<Condition> immunities) {this.immunities = immunities;}
 	public void addImmunity(Condition conditionToAdd) {immunities.add(conditionToAdd);}
 	public void dropImmunity(Condition conditionToDrop) {immunities.remove(conditionToDrop);}
-	//	public void setActions() {}
-	//	public void addAction() {}
-	//	public void dropAction() {}
+	public void setActionTree(ActionTree actionTree) {this.actionTree = actionTree;}
+	public void setStartingActionPoints(int startingActionPoints) {this.startingActionPoints = startingActionPoints;}
 
+	public void setImageFile(String f) {imageFile = f;}
+	public void setImageAlt(String f) {imageAlt = f;}
+	
 	@Override
 	public String toString() {
 		String toStr = "";
@@ -129,4 +128,5 @@ public class HeroType {
 		toStr += "Actions: \t" + actStr + "\n"; // TODO more complex print to suit data
 		return toStr;
 	}
+
 }
