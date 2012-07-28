@@ -91,12 +91,14 @@ public class Hero extends Creature {
 	
 	public ArrayList<Action> getAvailableActions() {
 		ArrayList<Action> avail = new ArrayList<Action>();
-		if (!avail.isEmpty()) {
+		if (!getActions().isEmpty()) {
 			for (Action a : getActions()) {
 				ActionTreeNode atn = heroType.getActionTree().locate(a);
 				if (atn != null) {
 					for (ActionTreeNode ak : atn.getChildren()) {
-						avail.add(ak.getData());
+						if (!getActions().contains(ak.getData())) {
+							avail.add(ak.getData());
+						}
 					}
 				}
 			}

@@ -7,6 +7,10 @@
  * http://stackoverflow.com/questions/5328405/jpanel-padding-in-java
  * http://docs.oracle.com/javase/1.4.2/docs/api/javax/swing/border/TitledBorder.html
  * http://stackoverflow.com/questions/668952/clearest-way-to-comma-delimit-a-list-java
+ * http://docs.oracle.com/javase/tutorial/uiswing/components/tooltip.html
+ * http://www.coderanch.com/t/345317/GUI/java/clear-JPanel-before-repainting
+ * http://docs.oracle.com/javase/tutorial/uiswing/components/list.html#mutable
+ * http://java.sun.com/developer/technicalArticles/GUI/jlist/
  * -------------------
  * GUI_CharScreen.java
  * -------------------
@@ -42,8 +46,10 @@ import javax.swing.border.TitledBorder;
 
 import com.osmihi.battle.game.Game;
 import com.osmihi.battle.mechanics.Generator;
+import com.osmihi.battle.realm.ActionTreeNode;
 import com.osmihi.battle.realm.Census;
 import com.osmihi.battle.realm.Condition;
+import com.osmihi.battle.realm.Creature;
 import com.osmihi.battle.realm.Hero;
 import com.osmihi.battle.realm.HeroType;
 import com.osmihi.battle.realm.Action;
@@ -53,7 +59,7 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 
 	private Game game;
 	private boolean done = false;
-	private Hero newHero = new Hero("New Hero", Census.getHeroType("Archer"));
+	private Hero newHero = new Hero(Generator.generateName(), Census.getHeroType("Archer"));
 	
 	private JButton btn1;
 	private JButton btn2;
@@ -72,7 +78,9 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 	
 	private JTextField heroName;
 	private JTextField heroLvl;
+	private JButton nameBtn;
 	private JComboBox<String> htChoice;
+	private boolean edit = false;
 	private ArrayList<String> alphabetic;
 	
 	StatRow hpRow;
@@ -90,12 +98,18 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 	private JTextArea statusList;
 	private JTextArea immunityList;
 	private JTextArea actionList;
-	private JTextArea availList;
+	private JPanel availPanel;
+	
+	private JPanel heroesPanel;
+	private JPanel btnPanel;
+	
+	private JList<Creature> heroesList;
 	
 	public GUI_CharScreen(Game g) {
 		super();
 		game = g;
 		refresh();
+		makeHeroesPanel();
 	}
 	
 	protected void populateWindow() {
@@ -152,14 +166,9 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 			delim = ", ";
 		}
 		
-		availList.setText("");
-		delim = "";
-		availList.append("Available Actions: ");
-		for (Action a : newHero.getAvailableActions()) {
-			availList.append(delim + a.getName());
-			delim = ", ";
-		}
-		
+		if (availPanel != null) {
+			makeAvailableSkills();
+		}		
 	}
 	
 	private void makeCharPanel() {
@@ -224,7 +233,7 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 		heroLvl.setFont(new Font("Verdana",Font.PLAIN,18));
 		heroLvl.setHorizontalAlignment(JTextField.LEFT);
 		
-		JButton nameBtn = new JButton("Generate");
+		nameBtn = new JButton("Generate");
 		
 		JPanel headMidPanel = new JPanel();
 		headMidPanel.setOpaque(false);
@@ -257,7 +266,11 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 		nameBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				htChoice.setSelectedItem(Generator.random(alphabetic));
+				String newHeroType;
+				do  {
+					newHeroType = Generator.random(alphabetic);
+				} while (newHeroType.equals(newHero.getHeroType().getName()));
+				htChoice.setSelectedItem(newHeroType);
 				newHero.setName(Generator.generateName());
 				refresh();
 			}
@@ -370,26 +383,60 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 		
 		JPanel apLeft = new JPanel();
 		apLeft.setOpaque(false);
-		availList = new JTextArea(" ");
-		availList.setOpaque(false);
-		availList.setEditable(false);
-		availList.setLineWrap(true);
-		availList.setWrapStyleWord(true);
-		availList.setFont(new Font("Verdana",Font.PLAIN,10));
-		apLeft.add(availList, BorderLayout.CENTER);
+		apLeft.setPreferredSize(new Dimension(140,220));
+		
+		availPanel = new JPanel();
+		availPanel.setOpaque(false);
+
+		apLeft.add(availPanel, BorderLayout.CENTER);
 		
 		JPanel apRight = new JPanel();
 		apRight.setOpaque(false);
+		apRight.setPreferredSize(new Dimension(140,220));
 		actionList = new JTextArea(" ");
 		actionList.setOpaque(false);
 		actionList.setEditable(false);
 		actionList.setLineWrap(true);
 		actionList.setWrapStyleWord(true);
-		actionList.setFont(new Font("Verdana",Font.PLAIN,10));
+		actionList.setFont(new Font("Verdana",Font.PLAIN,12));
 		apRight.add(actionList, BorderLayout.CENTER);
 		
 		actionsPanel.add(apLeft, BorderLayout.WEST);
 		actionsPanel.add(apRight, BorderLayout.EAST);
+	}
+	
+	private void makeAvailableSkills() {
+		JPanel availButtons = new JPanel();
+		availButtons.setLayout(new GridLayout(0,1,2,2));
+		availButtons.setOpaque(false);
+		availPanel.removeAll();
+		availPanel.updateUI();
+		availPanel.add(availButtons);
+		for (Action a : newHero.getAvailableActions()) {
+			final Action ac = a;
+			JButton aBtn = new JButton(a.getName());
+			aBtn.setEnabled(newHero.getActionPoints() > 0);			
+			
+			// tool tip that tells what children are
+			String kidText = "Next: ";
+			String delim = "";
+			for (ActionTreeNode kidNode : newHero.getHeroType().getActionTree().locate(a).getChildren()) {
+				kidText += delim + kidNode.getData().getName();
+				delim = ", ";
+			}
+			aBtn.setToolTipText(kidText);
+			
+			aBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if (newHero.getActionPoints() > 0) {
+						newHero.setActionPoints(newHero.getActionPoints() - 1);
+						newHero.addAction(ac);
+						refresh();
+					}
+				}
+			});
+			availButtons.add(aBtn);
+		}
 	}
 	
 	private class StatRow extends JPanel {
@@ -480,12 +527,137 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 	}
 	
 	private void makeCtrlPanel() {
+		JPanel infoPanel = new JPanel();
+		infoPanel.setLayout(new BorderLayout(10,10));
+		infoPanel.setBorder(new EmptyBorder(7,12,7,12));
+		infoPanel.setOpaque(false);
+		
+		JLabel infoTitle = new JLabel("Create / Edit Characters");
+		infoTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		infoTitle.setVerticalAlignment(SwingConstants.BOTTOM);
+		infoTitle.setFont(new Font("Verdana",Font.BOLD,13));
+		
+		JTextArea infoText = new JTextArea();
+		infoText.setEditable(false);
+		infoText.setWrapStyleWord(true);
+		infoText.setLineWrap(true);
+		infoText.setOpaque(false);
+		infoText.setFont(new Font("Verdana",Font.PLAIN,10));
+		infoText.setText("To create a new character, choose a Hero Type from the list & edit the name, or click \"Generate\" for a random character. Choose attacks, skills and spells, then click \"Save Character\". To edit an existing character, select them in the list and click \"Edit\". After editing, don't forget to save! You may have up to 4 characters in your party.");
+		
+		infoPanel.add(infoTitle, BorderLayout.NORTH);
+		infoPanel.add(infoText, BorderLayout.CENTER);
+		
+		heroesPanel = new JPanel();
+		heroesPanel.setLayout(new BorderLayout(10,10));
+		heroesPanel.setBorder(new EmptyBorder(7,10,7,10));
+		heroesPanel.setOpaque(false);
+		
+		makeHeroesPanel();
+		makeButtonPanel();
+		
+		ctrlPanel = new JPanel();
+		ctrlPanel.setPreferredSize(new Dimension(240,600));
+		ctrlPanel.setBorder(new LineBorder(colors[2],4));
+		ctrlPanel.setLayout(new GridLayout(3,1,20,20));
+		ctrlPanel.setOpaque(false);
+		ctrlPanel.add(infoPanel);
+		ctrlPanel.add(heroesPanel);
+		ctrlPanel.add(btnPanel);
+	}
+	
+	public void makeHeroesPanel() {
+		heroesPanel.removeAll();
+		
+		JLabel heroesTitle = new JLabel("Adventuring Party");
+		heroesTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		heroesTitle.setVerticalAlignment(SwingConstants.BOTTOM);
+		heroesTitle.setFont(new Font("Verdana",Font.BOLD,13));
+		
+		DefaultListModel<Creature> heroesTeam = new DefaultListModel<Creature>();
+		
+		if (game != null) {
+			for (Creature c : game.getHeroTeam()) {heroesTeam.addElement(c);}
+		}
+		heroesList = new JList<Creature>(heroesTeam);
+		heroesList.setCellRenderer(new CreatureListCellRenderer());
+		heroesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
+		JScrollPane heroesScroll = new JScrollPane(heroesList);
+		heroesScroll.setOpaque(false);
+		
+		JButton editBtn = new JButton("Edit");
+		editBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Creature c = heroesList.getSelectedValue();
+				if (c instanceof Hero) {
+					Hero h = (Hero)c;
+					
+					for (int i = 0; i < htChoice.getItemCount(); i++) {
+						if (htChoice.getItemAt(i).equals(h.getHeroType().getName())) {
+							htChoice.setSelectedIndex(i);
+						}
+					}
+					
+					newHero = h;
+					refresh();
+					game.dropHeroFromTeam(c);
+					makeHeroesPanel();
+					if (game.getHeroTeam().size() < 4) {btn2.setEnabled(true);}
+				}
+			}
+		});
+		
+		JButton dropBtn = new JButton("Drop");
+		dropBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Creature c = heroesList.getSelectedValue();
+				game.dropHeroFromTeam(c);
+				makeHeroesPanel();
+				if (game.getHeroTeam().size() < 4) {btn2.setEnabled(true);}
+			}
+		});
+		
+		JPanel cmdRow = new JPanel();
+		cmdRow.setOpaque(false);
+		cmdRow.setLayout(new GridLayout(1,2,5,5));
+		cmdRow.add(editBtn);
+		cmdRow.add(dropBtn);
+		
+		heroesPanel.add(heroesTitle, BorderLayout.NORTH);
+		heroesPanel.add(heroesScroll, BorderLayout.CENTER);
+		heroesPanel.add(cmdRow, BorderLayout.SOUTH);
+		heroesPanel.updateUI();
+	}
+
+	private class CreatureListCellRenderer extends DefaultListCellRenderer {
+		private static final long serialVersionUID = -146205578718440541L;
+
+		public CreatureListCellRenderer() {}
+		
+		@Override
+		public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+			super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			String str = "";
+			Creature c = (Creature) value;
+			if (c instanceof Hero) {
+				Hero h = (Hero)c;
+				str += "[" + h.getHeroType().getName() + " " + h.getLevel() + "] ";
+			}
+			str += c.getName();
+			setText(str);
+			return this;
+		}
+	}
+	
+	public void makeButtonPanel() {
 		btn1 = new JButton("Make characters (stock)");
-		btn2 = new JButton("Print character");
+		btn2 = new JButton("Save character");
 		btn3 = new JButton("Done");
 		btn1.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btn2.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btn3.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btn1.setEnabled(false);
 		//btn3.setEnabled(false);
 		
 		btn1.addActionListener(new ActionListener() {
@@ -499,7 +671,13 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 		
 		btn2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println(newHero.toString());
+				if (game.getHeroTeam().size() < 4) {
+					game.addHeroToTeam(newHero);
+					//System.out.println(newHero.toString());
+					nameBtn.doClick();
+					makeHeroesPanel();
+				}
+				if (game.getHeroTeam().size() >= 4) {btn2.setEnabled(false);}
 			}
 		});
 		
@@ -510,32 +688,24 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 			}
 		});
 		
-		JPanel btnPanel = new JPanel();
-		btnPanel.setLayout(new GridLayout(3,1,10,10));
+		btnPanel = new JPanel();
+		//btnPanel.setLayout(new GridLayout(3,1,10,10));
 		btnPanel.setOpaque(false);
 		btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.Y_AXIS));
 		btnPanel.add(new JLabel(" "));
 		btnPanel.add(new JLabel(" "));
-		btnPanel.add(btn1);
+		//btnPanel.add(btn1);
 		btnPanel.add(new JLabel(" "));
 		btnPanel.add(btn2);
 		btnPanel.add(new JLabel(" "));
 		btnPanel.add(btn3);
 		btnPanel.add(new JLabel(" "));
-		
-		ctrlPanel = new JPanel();
-		ctrlPanel.setPreferredSize(new Dimension(240,600));
-		ctrlPanel.setBorder(new LineBorder(colors[2],4));
-		ctrlPanel.setLayout(new GridLayout(3,1,20,20));
-		ctrlPanel.setOpaque(false);
-		ctrlPanel.add(new JLabel(""));
-		ctrlPanel.add(new JLabel(""));
-		ctrlPanel.add(btnPanel);
 	}
 	
 	public Game getGame() {return game;}
 	public boolean done() {return done;}
 	
+	// old; used to generate some stock characters
 	private void makeChars() {
 		Hero hero1 = new Hero("Ugg", Census.getHeroType("Barbarian"));
 		hero1.addAction(Census.getAttack("Club"));
@@ -574,5 +744,9 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 		hero6.addAction(Census.getSpell("Stone"));
 		hero6.addAction(Census.getSpell("Bolt"));
 		game.addHero(hero6);
+	}
+	
+	public void setGame(Game g) {
+		game = g;
 	}
 }

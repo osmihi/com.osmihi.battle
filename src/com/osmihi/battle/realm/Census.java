@@ -48,8 +48,13 @@ public class Census {
 		conditions.put("Poison", new Condition("Poison"));
 		conditions.get("Poison").setStrengthMod(-3);
 		conditions.get("Poison").setSpeedMod(-2);
-		conditions.get("Poison").setRoundDam(2);
+		conditions.get("Poison").setRoundDam(1);
 		conditions.get("Poison").setDuration(4);
+		
+		conditions.put("Bleed", new Condition("Bleed"));
+		conditions.get("Bleed").setStrengthMod(-1);
+		conditions.get("Bleed").setRoundDam(4);
+		conditions.get("Bleed").setDuration(4);
 		
 		conditions.put("Slow", new Condition("Slow"));
 		conditions.get("Slow").setSpeedMod(-10);
@@ -63,6 +68,11 @@ public class Census {
 		conditions.get("Stone").setDefenseMod(50);
 		conditions.get("Stone").setDuration(3);
 		
+		conditions.put("Protected", new Condition("Protected"));
+		conditions.get("Protected").setIntelligenceMod(10);
+		conditions.get("Protected").setDefenseMod(20);
+		conditions.get("Protected").setDuration(1);
+		
 		conditions.put("Haste", new Condition("Haste"));
 		conditions.get("Haste").setSpeedMod(25);
 		conditions.get("Haste").setDefenseMod(15);
@@ -72,6 +82,12 @@ public class Census {
 		conditions.get("Might").setStrengthMod(20);
 		conditions.get("Might").setIntelligenceMod(-5);
 		conditions.get("Might").setDuration(3);
+
+		conditions.put("Enraged", new Condition("Enraged"));
+		conditions.get("Enraged").setStrengthMod(20);
+		conditions.get("Enraged").setDefenseMod(-10);
+		conditions.get("Enraged").setIntelligenceMod(-10);
+		conditions.get("Enraged").setDuration(3);
 		
 		conditions.put("Cripple", new Condition("Cripple"));
 		conditions.get("Cripple").setDefenseMod(-20);
@@ -83,27 +99,53 @@ public class Census {
 		conditions.get("Hide").setDefenseMod(50);
 		conditions.get("Hide").setDuration(1);
 		
+		conditions.put("Aided", new Condition("Aided"));
+		conditions.get("Aided").setOffenseMod(10);
+		conditions.get("Aided").setDefenseMod(10);
+		conditions.get("Aided").setDuration(1);
+		
 		// Actions
 		// Attacks, Skills, Spells
-		actions.putAll(attacks);
-		actions.putAll(skills);
-		actions.putAll(spells);
 
 		attacks.put("Club", new Action("Club", Action.ActionType.ATTACK));
 		attacks.get("Club").setMpCost(0);
-		attacks.get("Club").setSuccessChance(8);
+		attacks.get("Club").setSuccessChance(6);
 		attacks.get("Club").setMinDamage(4);
-		attacks.get("Club").setMaxDamage(14);
+		attacks.get("Club").setMaxDamage(10);
 		attacks.get("Club").setStatusChance(0);
 		attacks.get("Club").setStatusEffect(null);
+				
+		attacks.put("Mace", new Action("Mace", Action.ActionType.ATTACK));
+		attacks.get("Mace").setMpCost(0);
+		attacks.get("Mace").setSuccessChance(8);
+		attacks.get("Mace").setMinDamage(4);
+		attacks.get("Mace").setMaxDamage(14);
+		attacks.get("Mace").setStatusChance(0);
+		attacks.get("Mace").setStatusEffect(null);
 		
 		attacks.put("Knife", new Action("Knife", Action.ActionType.ATTACK));
 		attacks.get("Knife").setMpCost(0);
 		attacks.get("Knife").setSuccessChance(7);
 		attacks.get("Knife").setMinDamage(2);
 		attacks.get("Knife").setMaxDamage(6);
-		attacks.get("Knife").setStatusChance(0);
-		attacks.get("Knife").setStatusEffect(null);
+		attacks.get("Knife").setStatusChance(1);
+		attacks.get("Knife").setStatusEffect(conditions.get("Bleed"));
+
+		attacks.put("Staff", new Action("Staff", Action.ActionType.ATTACK));
+		attacks.get("Staff").setMpCost(0);
+		attacks.get("Staff").setSuccessChance(8);
+		attacks.get("Staff").setMinDamage(2);
+		attacks.get("Staff").setMaxDamage(6);
+		attacks.get("Staff").setStatusChance(0);
+		attacks.get("Staff").setStatusEffect(null);
+		
+		attacks.put("Lacerate", new Action("Lacerate", Action.ActionType.ATTACK));
+		attacks.get("Lacerate").setMpCost(0);
+		attacks.get("Lacerate").setSuccessChance(7);
+		attacks.get("Lacerate").setMinDamage(2);
+		attacks.get("Lacerate").setMaxDamage(6);
+		attacks.get("Lacerate").setStatusChance(7);
+		attacks.get("Lacerate").setStatusEffect(conditions.get("Bleed"));
 		
 		attacks.put("Shortsword", new Action("Shortsword", Action.ActionType.ATTACK));
 		attacks.get("Shortsword").setMpCost(0);
@@ -129,6 +171,30 @@ public class Census {
 		attacks.get("Shortbow").setStatusChance(0);
 		attacks.get("Shortbow").setStatusEffect(null);
 		
+		attacks.put("Sureshot", new Action("Sureshot", Action.ActionType.ATTACK));
+		attacks.get("Sureshot").setMpCost(0);
+		attacks.get("Sureshot").setSuccessChance(14);
+		attacks.get("Sureshot").setMinDamage(1);
+		attacks.get("Sureshot").setMaxDamage(4);
+		attacks.get("Sureshot").setStatusChance(0);
+		attacks.get("Sureshot").setStatusEffect(null);
+
+		attacks.put("Longbow", new Action("Longbow", Action.ActionType.ATTACK));
+		attacks.get("Longbow").setMpCost(0);
+		attacks.get("Longbow").setSuccessChance(8);
+		attacks.get("Longbow").setMinDamage(6);
+		attacks.get("Longbow").setMaxDamage(16);
+		attacks.get("Longbow").setStatusChance(0);
+		attacks.get("Longbow").setStatusEffect(null);
+		
+		attacks.put("Ankle Shot", new Action("Ankle Shot", Action.ActionType.ATTACK));
+		attacks.get("Ankle Shot").setMpCost(0);
+		attacks.get("Ankle Shot").setSuccessChance(8);
+		attacks.get("Ankle Shot").setMinDamage(3);
+		attacks.get("Ankle Shot").setMaxDamage(12);
+		attacks.get("Ankle Shot").setStatusChance(0);
+		attacks.get("Ankle Shot").setStatusEffect(conditions.get("Cripple"));
+		
 		attacks.put("Shield Bash", new Action("Shield Bash", Action.ActionType.ATTACK));
 		attacks.get("Shield Bash").setMpCost(0);
 		attacks.get("Shield Bash").setSuccessChance(5);
@@ -136,7 +202,14 @@ public class Census {
 		attacks.get("Shield Bash").setMaxDamage(6);
 		attacks.get("Shield Bash").setStatusChance(8);
 		attacks.get("Shield Bash").setStatusEffect(conditions.get("Slow"));
-		
+
+		attacks.put("Assassinate", new Action("Assassinate", Action.ActionType.ATTACK));
+		attacks.get("Assassinate").setMpCost(0);
+		attacks.get("Assassinate").setSuccessChance(4);
+		attacks.get("Assassinate").setMinDamage(20);
+		attacks.get("Assassinate").setMaxDamage(40);
+		attacks.get("Assassinate").setStatusChance(10);
+		attacks.get("Assassinate").setStatusEffect(conditions.get("Bleed"));
 		
 		attacks.put("Wolf Bite", new Action("Wolf Bite", Action.ActionType.ATTACK));
 		attacks.get("Wolf Bite").setMpCost(0);
@@ -162,6 +235,14 @@ public class Census {
 		skills.get("Trip").setStatusChance(6);
 		skills.get("Trip").setStatusEffect(conditions.get("Slow"));
 		
+		skills.put("Aid", new Action("Aid", Action.ActionType.SKILL));
+		skills.get("Aid").setMpCost(0);
+		skills.get("Aid").setSuccessChance(14);
+		skills.get("Aid").setMinDamage(0);
+		skills.get("Aid").setMaxDamage(0);
+		skills.get("Aid").setStatusChance(8);
+		skills.get("Aid").setStatusEffect(conditions.get("Aided"));
+		
 		skills.put("Poison Dart", new Action("Poison Dart", Action.ActionType.SKILL));
 		skills.get("Poison Dart").setMpCost(0);
 		skills.get("Poison Dart").setSuccessChance(6);
@@ -176,7 +257,7 @@ public class Census {
 		skills.get("Rage").setMinDamage(0);
 		skills.get("Rage").setMaxDamage(0);
 		skills.get("Rage").setStatusChance(10);
-		skills.get("Rage").setStatusEffect(conditions.get("Might"));
+		skills.get("Rage").setStatusEffect(conditions.get("Enraged"));
 		
 		skills.put("Cripple", new Action("Cripple", Action.ActionType.SKILL));
 		skills.get("Cripple").setMpCost(0);
@@ -193,6 +274,15 @@ public class Census {
 		skills.get("Hide").setMaxDamage(0);
 		skills.get("Hide").setStatusChance(10);
 		skills.get("Hide").setStatusEffect(conditions.get("Hide"));
+		
+		skills.put("Protect", new Action("Protect", Action.ActionType.SKILL));
+		skills.get("Protect").setMpCost(0);
+		skills.get("Protect").setSuccessChance(14);
+		skills.get("Protect").setMinDamage(0);
+		skills.get("Protect").setMaxDamage(0);
+		skills.get("Protect").setStatusChance(6);
+		skills.get("Protect").setStatusEffect(conditions.get("Protected"));
+		
 		
 		spells.put("Slow", new Action("Slow", Action.ActionType.SPELL));
 		spells.get("Slow").setMpCost(4);
@@ -226,9 +316,11 @@ public class Census {
 		spells.get("Bolt").setStatusChance(0);
 		spells.get("Bolt").setStatusEffect(null);
 		
+		actions.putAll(attacks);
+		actions.putAll(skills);
+		actions.putAll(spells);
 		
 		// HeroTypes
-		// TODO Create actionTrees for each HeroType.
 		heroTypes.put("Barbarian", new HeroType("Barbarian"));
 		heroTypes.get("Barbarian").setStrengthMod(10);
 		heroTypes.get("Barbarian").setIntelligenceMod(-5);
@@ -239,9 +331,16 @@ public class Census {
 		heroTypes.get("Barbarian").setMpUnit(0);
 		heroTypes.get("Barbarian").setGp(20);
 		heroTypes.get("Barbarian").addImmunity(conditions.get("Poison"));
-//		add actions here
+		// actions
 		heroTypes.get("Barbarian").setStartingActionPoints(2);
-
+		ActionTree barbarianTree = new ActionTree(actions.get("Club"));
+		barbarianTree.insert(actions.get("Club"), actions.get("Mace"));
+		barbarianTree.insert(actions.get("Mace"), actions.get("Shield Bash"));
+		barbarianTree.insert(actions.get("Mace"), actions.get("Rage"));
+		barbarianTree.insert(actions.get("Club"), actions.get("Poison Dart"));
+		barbarianTree.insert(actions.get("Poison Dart"), actions.get("Hide"));
+		barbarianTree.insert(actions.get("Poison Dart"), actions.get("Trip"));
+		heroTypes.get("Barbarian").setActionTree(barbarianTree);
 		
 		heroTypes.put("Archer", new HeroType("Archer"));
 		heroTypes.get("Archer").setStrengthMod(0);
@@ -252,9 +351,16 @@ public class Census {
 		heroTypes.get("Archer").setHpUnit(16);
 		heroTypes.get("Archer").setMpUnit(0);
 		heroTypes.get("Archer").setGp(80);
-//		heroTypes.get("Archer").addImmunity(conditionToAdd);
-//		add actions here
+		heroTypes.get("Archer").addImmunity(conditions.get("Cripple"));
+		// actions
 		heroTypes.get("Archer").setStartingActionPoints(3);
+		ActionTree archerTree = new ActionTree(actions.get("Shortbow"));
+		archerTree.insert(actions.get("Shortbow"),actions.get("Poison Dart"));
+		archerTree.insert(actions.get("Poison Dart"), actions.get("Hide"));
+		archerTree.insert(actions.get("Hide"), actions.get("Ankle Shot"));
+		archerTree.insert(actions.get("Shortbow"), actions.get("Sureshot"));
+		archerTree.insert(actions.get("Sureshot"), actions.get("Longbow"));
+		heroTypes.get("Archer").setActionTree(archerTree);
 		
 		heroTypes.put("Ninja", new HeroType("Ninja"));
 		heroTypes.get("Ninja").setStrengthMod(0);
@@ -265,9 +371,17 @@ public class Census {
 		heroTypes.get("Ninja").setHpUnit(16);
 		heroTypes.get("Ninja").setMpUnit(6);
 		heroTypes.get("Ninja").setGp(60);
-//		heroTypes.get("Ninja").addImmunity(conditionToAdd);
-//		add actions here
+		heroTypes.get("Ninja").addImmunity(conditions.get("Enraged"));
+		// actions
 		heroTypes.get("Ninja").setStartingActionPoints(3);
+		ActionTree ninjaTree = new ActionTree(actions.get("Knife"));
+		ninjaTree.insert(actions.get("Knife"), actions.get("Poison Dart"));
+		ninjaTree.insert(actions.get("Knife"), actions.get("Shortsword"));
+		ninjaTree.insert(actions.get("Knife"), actions.get("Trip"));
+		ninjaTree.insert(actions.get("Trip"), actions.get("Haste"));
+		ninjaTree.insert(actions.get("Trip"), actions.get("Slow"));
+		ninjaTree.insert(actions.get("Poison Dart"), actions.get("Hide"));
+		heroTypes.get("Ninja").setActionTree(ninjaTree);
 		
 		heroTypes.put("Thief", new HeroType("Thief"));
 		heroTypes.get("Thief").setStrengthMod(-6);
@@ -281,6 +395,15 @@ public class Census {
 //		heroTypes.get("Thief").addImmunity(conditionToAdd);
 //		add actions here
 		heroTypes.get("Thief").setStartingActionPoints(5);
+		ActionTree thiefTree = new ActionTree(actions.get("Knife"));
+		thiefTree.insert(actions.get("Knife"), actions.get("Poison Dart"));
+		thiefTree.insert(actions.get("Knife"), actions.get("Trip"));
+		thiefTree.insert(actions.get("Knife"), actions.get("Hide"));
+		thiefTree.insert(actions.get("Trip"), actions.get("Cripple"));
+		thiefTree.insert(actions.get("Poison Dart"), actions.get("Lacerate"));
+		thiefTree.insert(actions.get("Lacerate"), actions.get("Assassinate"));
+		thiefTree.insert(actions.get("Hide"), actions.get("Aid"));
+		heroTypes.get("Thief").setActionTree(thiefTree);
 		
 		heroTypes.put("Knight", new HeroType("Knight"));
 		heroTypes.get("Knight").setStrengthMod(10);
@@ -292,8 +415,14 @@ public class Census {
 		heroTypes.get("Knight").setMpUnit(0);
 		heroTypes.get("Knight").setGp(100);
 //		heroTypes.get("Knight").addImmunity(conditionToAdd);
-//		add actions here
+		// actions
 		heroTypes.get("Knight").setStartingActionPoints(2);
+		ActionTree knightTree = new ActionTree(actions.get("Shortsword"));
+		knightTree.insert(actions.get("Shortsword"), actions.get("Longsword"));
+		knightTree.insert(actions.get("Shortsword"), actions.get("Shield Bash"));
+		knightTree.insert(actions.get("Shield Bash"), actions.get("Protect"));
+		knightTree.insert(actions.get("Protect"), actions.get("Mace"));
+		heroTypes.get("Knight").setActionTree(knightTree);
 
 		heroTypes.put("Wizard", new HeroType("Wizard"));
 		heroTypes.get("Wizard").setStrengthMod(-7);
@@ -302,11 +431,17 @@ public class Census {
 		heroTypes.get("Wizard").setOffenseMod(-7);
 		heroTypes.get("Wizard").setDefenseMod(5);
 		heroTypes.get("Wizard").setHpUnit(9);
-		heroTypes.get("Wizard").setMpUnit(32);
+		heroTypes.get("Wizard").setMpUnit(24);
 		heroTypes.get("Wizard").setGp(120);
 //		heroTypes.get("Wizard").addImmunity(conditionToAdd);
-//		add actions here
+		// actions
 		heroTypes.get("Wizard").setStartingActionPoints(4);
+		ActionTree wizardTree = new ActionTree(actions.get("Staff"));
+		wizardTree.insert(actions.get("Staff"), actions.get("Slow"));
+		wizardTree.insert(actions.get("Slow"), actions.get("Stone"));
+		wizardTree.insert(actions.get("Staff"), actions.get("Haste"));
+		wizardTree.insert(actions.get("Haste"), actions.get("Bolt"));
+		heroTypes.get("Wizard").setActionTree(wizardTree);
 
 		// Monsters
 		monsters.put("Wolf", new Creature("Wolf"));

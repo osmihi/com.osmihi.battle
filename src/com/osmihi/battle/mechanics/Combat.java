@@ -192,7 +192,7 @@ public class Combat {
 			gui_bs.animate(enemies,12);
 		}
 		
-		heroes.clear();
+		//heroes.clear();
 		deadHeroes.clear();
 		enemies.clear();
 		deadEnemies.clear();

@@ -60,6 +60,10 @@ public class ActionTree {
 		} 		
 	}
 	
+	public void insert(Action parent, Action child) {
+		insert(locate(parent), child);
+	}
+	
 	public void print(ActionTreeNode atn, int count) {
 		if (atn == null) {return;}
 		String margin = "";

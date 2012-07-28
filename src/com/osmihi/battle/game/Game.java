@@ -26,7 +26,6 @@ import java.util.HashSet;
 
 public class Game {
 	private Collection<Creature> playerCharacters;
-	//private Collection<HeroParty> heroParties;
 	
 	private Collection<Creature> hTeam;
 	private Collection<Creature> eTeam;
@@ -34,7 +33,6 @@ public class Game {
 	public Game() {
 		Census.populate();
 		playerCharacters = new HashSet<Creature>();
-		//heroParties = new HashSet<HeroParty>();
 		hTeam = new ArrayList<Creature>();
 		eTeam = new ArrayList<Creature>();
 		
@@ -54,11 +52,19 @@ public class Game {
 	}
 	
 	public void addHeroToTeam(Creature c) {
-		// TODO temporary until we implement HeroParty class
 		hTeam.add(c);
+	}
+	
+	public void dropHeroFromTeam(Creature c) {
+		hTeam.remove(c);
 	}
 	
 	public void addEnemy(Creature c) {
 		eTeam.add(c);
 	}
+	
+	public void clearEnemies() {
+		eTeam.clear();
+	}
+	
 }
