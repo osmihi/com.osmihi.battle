@@ -88,9 +88,6 @@ public class GUI_MainScreen extends GUI_GenericWindow {
 				new Thread(new Runnable() {
 					public void run() {
 						Combat bc = new Combat(game.getHeroTeam(), game.getEnemyTeam());
-						for (Creature c : bc.getHeroes()) {
-							//game.addHeroToTeam(c);
-						}
 						game.clearEnemies();
 						gui_cs.setGame(game);
 					}	

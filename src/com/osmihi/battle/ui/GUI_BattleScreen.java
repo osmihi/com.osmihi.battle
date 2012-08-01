@@ -8,6 +8,7 @@
  * http://docs.oracle.com/javase/tutorial/uiswing/layout/box.html#alignment
  * http://docs.oracle.com/javase/tutorial/uiswing/layout/card.html
  * in-class program showing use of bitwise operator to determine odd/even
+ * http://www.velocityreviews.com/forums/t133901-outer-class-keyword.html
  *
  * ----------------------
  * GUI_BattleScreen.java
@@ -32,12 +33,14 @@ import com.osmihi.battle.realm.Action;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Collection;
@@ -45,8 +48,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
 
 public class GUI_BattleScreen extends GUI_GenericWindow {
@@ -56,8 +62,9 @@ public class GUI_BattleScreen extends GUI_GenericWindow {
 	
 	Combat bc;
 	
-	JPanel battlePicPanel;
-	Map<Creature,CreaturePanel> creaturePanels;
+	BgPanel battlePicPanel;
+	Map<Creature,Avatar> creaturePanels;
+	Map<Creature,StatBox> statBoxes;
 	
 	JPanel bottomPanel;
 	CardLayout cardSet;
@@ -72,7 +79,8 @@ public class GUI_BattleScreen extends GUI_GenericWindow {
 	public GUI_BattleScreen(Combat bClock) {
 		super();
 		bc = bClock;
-		creaturePanels = new HashMap<Creature,CreaturePanel>();
+		creaturePanels = new HashMap<Creature,Avatar>();
+		statBoxes = new HashMap<Creature,StatBox>();
 		turnPanels = new HashMap<Creature,TurnPanel>();
 		
 		cardSet = new CardLayout();
@@ -92,29 +100,111 @@ public class GUI_BattleScreen extends GUI_GenericWindow {
 	}
 	
 	private void makePicPanel() {
-		battlePicPanel = new JPanel();
+		battlePicPanel = new BgPanel("res/img/Battle/dungeon.png");
 		battlePicPanel.setPreferredSize(new Dimension(720,342));
-		battlePicPanel.setLayout(new BorderLayout());
-		battlePicPanel.setBorder(new LineBorder(colors[2],1));
+		//battlePicPanel.setLayout(new BorderLayout());
+		battlePicPanel.setLayout(new GridLayout(1,2,50,50));
+		battlePicPanel.setBorder(new MatteBorder(0,0,4,0,colors[2]));
+		battlePicPanel.setOpaque(false);
 		
 		JPanel heroPanel = new JPanel();
-		heroPanel.setLayout(new GridLayout(0,2));
+		heroPanel.setLayout(new GridLayout(1,3));
+		heroPanel.setOpaque(false);
+		
+		JPanel heroColumnFront = new JPanel();
+		heroColumnFront.setLayout(new BoxLayout(heroColumnFront, BoxLayout.Y_AXIS));
+		heroColumnFront.setOpaque(false);
+		
+		JPanel heroColumnMiddle = new JPanel();
+		heroColumnMiddle.setLayout(new BoxLayout(heroColumnMiddle, BoxLayout.Y_AXIS));
+		heroColumnMiddle.setOpaque(false);
+		
+		JPanel heroColumnBack = new JPanel();
+		heroColumnBack.setLayout(new BoxLayout(heroColumnBack, BoxLayout.Y_AXIS));
+		heroColumnBack.setOpaque(false);
+		
+		heroPanel.add(heroColumnBack);
+		heroPanel.add(heroColumnMiddle);
+		heroPanel.add(heroColumnFront);
+		
+		heroColumnFront.setBorder(new EmptyBorder(110,0,0,0));
+		heroColumnMiddle.setBorder(new EmptyBorder(110,0,0,0));
+		heroColumnBack.setBorder(new EmptyBorder(96,0,0,0));
+		
+		int i = 0;
+		for (Creature c : bc.getHeroes()) {
+			final Creature cf = c;
+			Avatar av = new Avatar(cf);
+			av.animateOnClick(false);
+			av.addPicClickListener(new MouseAdapter() {
+				@Override
+				public void mousePressed(MouseEvent e) {
+					for (TurnPanel tp : turnPanels.values()) {
+						selectedTarget = cf;
+						tp.selectTarget(cf);
+					}
+				}
+			});
+
+			if ((i & 1) == 0) {
+				av.setBorder(new EmptyBorder(0,0,32,0));
+				heroColumnFront.add(av);
+			} else {
+				av.setBorder(new EmptyBorder(32,0,0,0));
+				heroColumnMiddle.add(av);
+			}
+
+			creaturePanels.put(c, av);
+			
+			StatBox cInfo = new StatBox(c);
+			statBoxes.put(c, cInfo);
+			heroColumnBack.add(cInfo);
+			i++;
+		}
 		
 		JPanel enemyPanel = new JPanel();
-		enemyPanel.setLayout(new GridLayout(0,2));
+		enemyPanel.setLayout(new GridLayout(1,4));
+		enemyPanel.setOpaque(false);
 		
-		for (Creature c : bc.getHeroes()) {
-			creaturePanels.put(c, new CreaturePanel(c,true));
-			heroPanel.add(creaturePanels.get(c));
+		JPanel[] enemyCols = new JPanel[4];
+		
+		for (int j = 0; j < enemyCols.length; j++) {
+			enemyCols[j] = new JPanel();
+			enemyCols[j].setLayout(new BoxLayout(enemyCols[j], BoxLayout.Y_AXIS));
+			enemyCols[j].setOpaque(false);
+			enemyCols[j].setBorder(new EmptyBorder(110,0,0,0));
+			
+			enemyPanel.add(enemyCols[j]);
 		}
 		
+		i = 0;
 		for (Creature c : bc.getEnemies()) {
-			creaturePanels.put(c, new CreaturePanel(c,false));
-			enemyPanel.add(creaturePanels.get(c));
+			final Creature cf = c;
+			Avatar av = new Avatar(cf);
+			av.animateOnClick(false);
+			av.addPicClickListener(new MouseAdapter() {
+				@Override
+				public void mousePressed(MouseEvent e) {
+					for (TurnPanel tp : turnPanels.values()) {
+						selectedTarget = cf;
+						tp.selectTarget(cf);
+					}
+				}
+			});
+
+			if ((i < 2) || (i > 3 && i < 6)) {
+				av.setBorder(new EmptyBorder(0,0,32,0));
+			} else {
+				av.setBorder(new EmptyBorder(32,0,0,0));
+			}
+			enemyCols[i / 2].add(av);
+
+			creaturePanels.put(c, av);
+			i++;
 		}
 		
-		battlePicPanel.add(heroPanel,BorderLayout.WEST);
-		battlePicPanel.add(enemyPanel,BorderLayout.EAST);
+		battlePicPanel.add(heroPanel);
+		battlePicPanel.add(enemyPanel);
 	}
 	
 	private void makeTextPanel() {
@@ -158,6 +248,86 @@ public class GUI_BattleScreen extends GUI_GenericWindow {
 		cardSet.show(bottomPanel, "battleText");
 	}
 	
+	private class StatBox extends JPanel {
+		private static final long serialVersionUID = -8372897647070831052L;
+		private Creature c;
+		private CardLayout sCards;
+		
+		private JLabel hpv;
+		private JLabel mhpv;
+		private JLabel mpv;
+		private JLabel mmpv;
+		
+		private JTextArea statusList;
+		
+		public StatBox(Creature cre) {
+			c = cre;
+						
+			this.setOpaque(false);
+			this.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), c.getName(), TitledBorder.RIGHT, TitledBorder.CENTER, new Font("Verdana",Font.BOLD,12), Color.BLACK));
+			sCards = new CardLayout();
+			this.setLayout(sCards);
+
+			this.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mousePressed(MouseEvent e) {
+					sCards.next(StatBox.this);
+				}
+			});
+			
+			JPanel hpmp = new JPanel();
+			hpmp.setLayout(new GridLayout(2,0));
+			hpmp.setOpaque(false);
+			
+			hpv = new JLabel("" + c.getHp());
+			mhpv = new JLabel("" + c.getMaxHp());
+			mpv = new JLabel("" + c.getMp());
+			mmpv = new JLabel("" + c.getMaxMp());
+			
+			JLabel[] lbls = {new JLabel("HP"), new JLabel(" "), hpv, new JLabel(" / "), mhpv, new JLabel("MP"), new JLabel(" "), mpv, new JLabel(" / "), mmpv,};
+			for (int j = 0; j < lbls.length; j++) {
+				lbls[j].setForeground(Color.BLACK);
+				if (j % 5 == 0) {lbls[j].setFont(new Font("Verdana", Font.BOLD, 11));}
+				else {lbls[j].setFont(new Font("Verdana", Font.PLAIN, 11));}
+				hpmp.add(lbls[j]);
+			}
+			
+			JPanel status = new JPanel();
+			status.setOpaque(false);
+			statusList = new JTextArea("");
+			statusList.setFont(new Font("Verdana", Font.PLAIN, 11));
+			statusList.setOpaque(false);
+			statusList.setEditable(false);
+			status.add(statusList, BorderLayout.CENTER);
+			
+			this.add(hpmp, "hpmp");
+			this.add(status, "status");
+			
+			sCards.show(this,"hpmp");
+			
+			refreshStats();
+		}
+				
+		public void refreshStats() {
+			hpv.setText("" + c.getHp());
+			mhpv.setText("" + c.getMaxHp());
+			mpv.setText("" + c.getMp());
+			mmpv.setText("" + c.getMaxMp());
+			
+			statusList.setText("");
+			String delim = "";
+			for (Condition con : c.getStatus().keySet()) {
+				statusList.append(delim + con.getName() + "(" + c.getStatusDuration(con) + ")");
+				delim = ", ";
+			}
+			if (statusList.getText().equals("")) {
+				this.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), c.getName(), TitledBorder.RIGHT, TitledBorder.CENTER, new Font("Verdana",Font.BOLD,12), Color.BLACK));
+			} else {
+				this.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), c.getName(), TitledBorder.RIGHT, TitledBorder.CENTER, new Font("Verdana",Font.BOLD,12), Color.GREEN));
+			}
+		}
+	}
+	
 	public void animate(Creature c, int rpt) {
 		if ((rpt & 1) != 0) {rpt++;} // make sure it's an even number of repeats
 		for (int i= 0; i < rpt; i++) {
@@ -191,119 +361,18 @@ public class GUI_BattleScreen extends GUI_GenericWindow {
 	}
 	
 	public void refresh(Creature cre) {
-			creaturePanels.get(cre).refreshStats();
-	}
+			if (cre instanceof Hero) {
+				statBoxes.get(cre).refreshStats();
+			}
+			if (cre.getHp() < 1) {
+				creaturePanels.get(cre).die();
+			}
+			creaturePanels.get(cre).setHealthy();
+			for (Condition con : cre.getStatus().keySet()) {
+				creaturePanels.get(cre).setAffected();
+			}
+	}	
 	
-	private class CreaturePanel extends JPanel implements MouseListener {
-		private static final long serialVersionUID = 1L;
-		private Creature c;
-		JLabel pic;
-		private ImageIcon icon1;
-		private ImageIcon icon2;
-		
-		private JPanel stats;
-		
-		private JLabel hpLabel;
-		private JLabel mpLabel;
-		private JLabel conLabel;
-		
-		private int valIndex = 0;
-		private int[] tbSide = {TitledBorder.LEFT, TitledBorder.RIGHT};
-		private String[] picSide = {BorderLayout.EAST, BorderLayout.WEST};
-		private String[] statSide = {BorderLayout.WEST, BorderLayout.EAST};
-		private int[] labelSide = {JLabel.LEFT, JLabel.RIGHT};
-		
-		public CreaturePanel(Creature cre, boolean forHero) {
-			if (forHero) {valIndex = 0;} else {valIndex = 1;}
-			c = cre;
-			if (c.getImageFile() != null) {icon1 = new ImageIcon(c.getImageFile());}
-			else {icon1 = new ImageIcon("res/img/_blank.png");}
-			if (c.getImageAlt() != null) {icon2 = new ImageIcon(c.getImageAlt());}
-			else {icon2 = icon1;}
-			
-			pic = new JLabel(icon1);
-			
-			stats = makeStatsPanel();
-			
-			setPreferredSize(new Dimension(160,100));
-			setLayout(new BorderLayout(4,4));
-			setBorder(new TitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), c.getName(), tbSide[valIndex], TitledBorder.CENTER));
-			add(pic, picSide[valIndex]);
-			add(stats, statSide[valIndex]);
-			addMouseListener(this);
-		}
-		
-		public void refreshStats() {
-			hpLabel.setText(c.getHp() + " / " + c.getMaxHp());
-			mpLabel.setText(c.getMp() + " / " + c.getMaxMp());
-			String conText = "";
-			for (Condition con : c.getStatus().keySet()) {
-				conText += con.getName() + " (" + c.getStatus().get(con).intValue() + ") ";
-			}
-			if (c.getHp() <= 0) {conText = "DEAD";}
-			conLabel.setText(conText);
-		}
-		
-		protected JPanel makeStatsPanel() {
-			JPanel sp = new JPanel();
-			sp.setLayout(new GridLayout(0,1,0,0));
-
-			JPanel hpPanel = new JPanel();
-			hpPanel.setLayout(new GridLayout(0,2,0,0));
-			hpLabel = new JLabel(c.getHp() + " / " + c.getMaxHp(), labelSide[valIndex]);
-			hpPanel.add(hpLabel);
-			hpPanel.add(new JLabel("hp", labelSide[valIndex]));
-
-			JPanel mpPanel = new JPanel();
-			mpPanel.setLayout(new GridLayout(0,2,0,0));
-			mpLabel = new JLabel(c.getMp() + " / " + c.getMaxMp(), labelSide[valIndex]);
-			mpPanel.add(mpLabel);
-			mpPanel.add(new JLabel("mp", labelSide[valIndex]));
-			
-			JPanel hpmpPanel = new JPanel();
-			hpmpPanel.setLayout(new GridLayout(0,1,0,0));
-			hpmpPanel.add(hpPanel);
-			hpmpPanel.add(mpPanel);
-			
-			JPanel conPanel = new JPanel();
-			conPanel.setLayout(new GridLayout(0,1,0,0));
-			String conText = "";
-			for (Condition con : c.getStatus().keySet()) {
-				conText += con.getName() + " (" + c.getStatus().get(con).intValue() + ")";
-			}
-			conLabel = new JLabel(conText, labelSide[valIndex]);
-			conPanel.add(conLabel);
-			
-			sp.add(hpmpPanel);
-			sp.add(conPanel);
-			
-			return sp;
-		}
-
-		public void flip() {
-			if (pic.getIcon() == icon1) {pic.setIcon(icon2);}
-			else {pic.setIcon(icon1);}
-		}		
-		@Override
-		public void mouseClicked(MouseEvent e) {}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-			for (TurnPanel tp : turnPanels.values()) {
-				selectedTarget = c;
-				tp.selectTarget(this.c);
-			}
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {}
-
-		@Override
-		public void mouseEntered(MouseEvent e) {}
-
-		@Override
-		public void mouseExited(MouseEvent e) {}
-	}
 	
 	private class TurnPanel extends JPanel {
 		private static final long serialVersionUID = 1L;
@@ -331,7 +400,7 @@ public class GUI_BattleScreen extends GUI_GenericWindow {
 		private JLabel tName;
 		private JLabel tStat;
 		private Map<Action,JButton> actionBtns;
-		
+
 		public TurnPanel(Creature cre) {
 			c = cre;
 			hpLabel = new JLabel();

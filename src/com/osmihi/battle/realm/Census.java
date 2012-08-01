@@ -52,8 +52,8 @@ public class Census {
 		conditions.get("Poison").setDuration(4);
 		
 		conditions.put("Bleed", new Condition("Bleed"));
-		conditions.get("Bleed").setStrengthMod(-1);
-		conditions.get("Bleed").setRoundDam(4);
+		conditions.get("Bleed").setStrengthMod(-2);
+		conditions.get("Bleed").setRoundDam(5);
 		conditions.get("Bleed").setDuration(4);
 		
 		conditions.put("Slow", new Condition("Slow"));
@@ -141,10 +141,10 @@ public class Census {
 		
 		attacks.put("Lacerate", new Action("Lacerate", Action.ActionType.ATTACK));
 		attacks.get("Lacerate").setMpCost(0);
-		attacks.get("Lacerate").setSuccessChance(7);
+		attacks.get("Lacerate").setSuccessChance(9);
 		attacks.get("Lacerate").setMinDamage(2);
 		attacks.get("Lacerate").setMaxDamage(6);
-		attacks.get("Lacerate").setStatusChance(7);
+		attacks.get("Lacerate").setStatusChance(9);
 		attacks.get("Lacerate").setStatusEffect(conditions.get("Bleed"));
 		
 		attacks.put("Shortsword", new Action("Shortsword", Action.ActionType.ATTACK));
@@ -174,8 +174,8 @@ public class Census {
 		attacks.put("Sureshot", new Action("Sureshot", Action.ActionType.ATTACK));
 		attacks.get("Sureshot").setMpCost(0);
 		attacks.get("Sureshot").setSuccessChance(14);
-		attacks.get("Sureshot").setMinDamage(1);
-		attacks.get("Sureshot").setMaxDamage(4);
+		attacks.get("Sureshot").setMinDamage(2);
+		attacks.get("Sureshot").setMaxDamage(6);
 		attacks.get("Sureshot").setStatusChance(0);
 		attacks.get("Sureshot").setStatusEffect(null);
 
@@ -309,7 +309,7 @@ public class Census {
 		spells.get("Haste").setStatusEffect(conditions.get("Haste"));
 		
 		spells.put("Bolt", new Action("Bolt", Action.ActionType.SPELL));
-		spells.get("Bolt").setMpCost(4);
+		spells.get("Bolt").setMpCost(6);
 		spells.get("Bolt").setSuccessChance(8);
 		spells.get("Bolt").setMinDamage(6);
 		spells.get("Bolt").setMaxDamage(20);

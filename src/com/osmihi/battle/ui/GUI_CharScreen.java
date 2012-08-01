@@ -59,9 +59,8 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 
 	private Game game;
 	private boolean done = false;
-	private Hero newHero = new Hero(Generator.generateName(), Census.getHeroType("Archer"));
+	private Hero newHero = new Hero(Generator.generateName(), Generator.random(Census.getHeroTypes()));
 	
-	private JButton btn1;
 	private JButton btn2;
 	private JButton btn3;
 	
@@ -80,7 +79,6 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 	private JTextField heroLvl;
 	private JButton nameBtn;
 	private JComboBox<String> htChoice;
-	private boolean edit = false;
 	private ArrayList<String> alphabetic;
 	
 	StatRow hpRow;
@@ -505,25 +503,11 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 			add(vLabel, BorderLayout.EAST);
 		}
 		
-		public StatRow(String text, String value) {
-			this(text,value,false);
-		}
-		
-		public StatRow(String text, int value, boolean bigSize) {
-			this(text,""+value,bigSize);
-		}
-		
-		public StatRow(String text, int value) {
-			this(text,""+value,false);
-		}
-
-		public void setValue(int value) {
-			setValue("" + value);
-		}
-		
-		public void setValue(String value) {
-			vLabel.setText(value);
-		}
+		public StatRow(String text, String value) {this(text,value,false);}
+		public StatRow(String text, int value, boolean bigSize) {this(text,""+value,bigSize);}
+		public StatRow(String text, int value) {this(text,""+value,false);}
+		public void setValue(int value) {setValue("" + value);}
+		public void setValue(String value) {vLabel.setText(value);}
 	}
 	
 	private void makeCtrlPanel() {
@@ -543,8 +527,10 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 		infoText.setLineWrap(true);
 		infoText.setOpaque(false);
 		infoText.setFont(new Font("Verdana",Font.PLAIN,10));
-		infoText.setText("To create a new character, choose a Hero Type from the list & edit the name, or click \"Generate\" for a random character. Choose attacks, skills and spells, then click \"Save Character\". To edit an existing character, select them in the list and click \"Edit\". After editing, don't forget to save! You may have up to 4 characters in your party.");
-		
+		infoText.setText("To create a new character, choose a Hero Type from the list & edit the name, " + 
+				"or click \"Generate\" for a random character. Choose attacks, skills and spells, then " + 
+				"click \"Save Character\". To edit an existing character, select them in the list and " + 
+				"click \"Edit\". After editing, don't forget to save! You may have up to 4 characters in your party.");
 		infoPanel.add(infoTitle, BorderLayout.NORTH);
 		infoPanel.add(infoText, BorderLayout.CENTER);
 		
@@ -651,24 +637,11 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 	}
 	
 	public void makeButtonPanel() {
-		btn1 = new JButton("Make characters (stock)");
 		btn2 = new JButton("Save character");
 		btn3 = new JButton("Done");
-		btn1.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btn2.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btn3.setAlignmentX(Component.CENTER_ALIGNMENT);
-		btn1.setEnabled(false);
-		//btn3.setEnabled(false);
-		
-		btn1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				makeChars();
-				btn1.setEnabled(false);
-				btn2.setEnabled(true);
-				btn3.setEnabled(true);
-			}
-		});
-		
+
 		btn2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (game.getHeroTeam().size() < 4) {
@@ -689,12 +662,10 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 		});
 		
 		btnPanel = new JPanel();
-		//btnPanel.setLayout(new GridLayout(3,1,10,10));
 		btnPanel.setOpaque(false);
 		btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.Y_AXIS));
 		btnPanel.add(new JLabel(" "));
 		btnPanel.add(new JLabel(" "));
-		//btnPanel.add(btn1);
 		btnPanel.add(new JLabel(" "));
 		btnPanel.add(btn2);
 		btnPanel.add(new JLabel(" "));
@@ -703,50 +674,6 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 	}
 	
 	public Game getGame() {return game;}
+	public void setGame(Game g) {game = g;}
 	public boolean done() {return done;}
-	
-	// old; used to generate some stock characters
-	private void makeChars() {
-		Hero hero1 = new Hero("Ugg", Census.getHeroType("Barbarian"));
-		hero1.addAction(Census.getAttack("Club"));
-		hero1.addAction(Census.getSkill("Rage"));
-		game.addHero(hero1);
-		
-		Hero hero2 = new Hero("Art", Census.getHeroType("Archer"));
-		hero2.addAction(Census.getAttack("Shortbow"));
-		hero2.addAction(Census.getSkill("Poison Dart"));
-		game.addHero(hero2);
-		
-		Hero hero3 = new Hero("Takashi", Census.getHeroType("Ninja"));
-		hero3.addAction(Census.getAttack("Shortsword"));
-		hero3.addAction(Census.getSkill("Trip"));
-		hero3.addAction(Census.getSkill("Poison Dart"));
-		hero3.addAction(Census.getSpell("Haste"));
-		game.addHero(hero3);
-		
-		Hero hero4 = new Hero("Fuji", Census.getHeroType("Thief"));
-		hero4.addAction(Census.getAttack("Knife"));
-		hero4.addAction(Census.getSkill("Poison Dart"));
-		hero4.addAction(Census.getSkill("Trip"));
-		hero4.addAction(Census.getSpell("Haste"));
-		hero4.addAction(Census.getSkill("Cripple"));
-		hero4.addAction(Census.getSkill("Hide"));
-		game.addHero(hero4);
-		
-		Hero hero5 = new Hero("Virgil", Census.getHeroType("Knight"));
-		hero5.addAction(Census.getAttack("Longsword"));
-		hero5.addAction(Census.getAttack("Shield Bash"));
-		game.addHero(hero5);
-		
-		Hero hero6 = new Hero("Hedge", Census.getHeroType("Wizard"));
-		hero6.addAction(Census.getAttack("Knife"));
-		hero6.addAction(Census.getSpell("Slow"));
-		hero6.addAction(Census.getSpell("Stone"));
-		hero6.addAction(Census.getSpell("Bolt"));
-		game.addHero(hero6);
-	}
-	
-	public void setGame(Game g) {
-		game = g;
-	}
 }

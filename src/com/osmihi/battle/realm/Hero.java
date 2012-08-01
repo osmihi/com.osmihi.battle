@@ -114,6 +114,52 @@ public class Hero extends Creature {
 	public void setName(String newName) {name = newName;}
 	public void setHeroType(HeroType newHeroType) {heroType = newHeroType;}
 	public void setLevel(int newLevel) {level = newLevel;}
-	public void setXp(int newXp) {xp = newXp;}
+	public void setXp(int newXp) {
+		// xp needed to reach level n: 2^n * 400
+		int nextLvlXp = (int)(Math.pow(2, level) * 400);
+		xp = newXp;
+		while (xp >= nextLvlXp) { // level up
+			levelUp();
+			nextLvlXp = (int)(Math.pow(2, level) * 400);
+		}
+	}
+	
+	private void levelUp() {
+		level++;
+		System.out.println(getName() + " is now level " + level + "!");
+		
+		setActionPoints( getActionPoints() + (heroType.getStartingActionPoints() / 2) );
+		System.out.println(getName() + " gains " + (heroType.getStartingActionPoints() / 2) + " action points.");
+		
+		setMaxHp(getMaxHp() + heroType.getHpUnit());
+		hp = maxHp;
+		System.out.println(getName() + " gains " + heroType.getHpUnit() + " hit points.");
+		
+		setMaxMp(getMaxMp() + heroType.getMpUnit());
+		mp = maxMp;
+		System.out.println(getName() + " gains " + heroType.getMpUnit() + " magic points.");
+		
+		if (Generator.random(1, 3) > 2) {
+			strength += Math.ceil(level / 3);
+			System.out.println("Strength increases by " + Math.ceil(level / 3) + "!");
+		}
+		if (Generator.random(1, 3) > 2) {
+			intelligence += Math.ceil(level / 3);
+			System.out.println("Intelligence increases by " + Math.ceil(level / 3) + "!");
+		}
+		if (Generator.random(1, 3) > 2) {
+			speed += Math.ceil(level / 3);
+			System.out.println("Speed increases by " + Math.ceil(level / 3) + "!");
+		}
+		if (Generator.random(1, 3) > 2) {
+			offense += Math.ceil(level / 3);
+			System.out.println("Offense increases by " + Math.ceil(level / 3) + "!");
+		}
+		if (Generator.random(1, 3) > 2) {
+			defense += Math.ceil(level / 3);
+			System.out.println("Defense increases by " + Math.ceil(level / 3) + "!");
+		}
+	}
+	
 	public void setActionPoints(int actionPoints) {this.actionPoints = actionPoints;}
 }
