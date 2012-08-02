@@ -79,18 +79,5 @@ public class ActionTree {
 	public ActionTreeNode getRoot() {return root;}
 
 	public void setRoot(ActionTreeNode root) {this.root = root;}
-	
-//	public static void main(String[] args) {
-//		Census.populate();
-//		ActionTree at = new ActionTree(Census.getAction("Knife"));
-//		at.insert(at.getRoot(), Census.getAction("Club"));
-//		at.insert(at.locate(Census.getAction("Knife")), Census.getAction("Shortsword"));
-//		at.insert(at.locate(Census.getAction("Shortsword")), Census.getAction("Longsword"));
-//		at.insert(at.locate(Census.getAction("Club")), Census.getAction("Hide"));
-//		at.insert(at.locate(Census.getAction("Hide")), Census.getAction("Haste"));
-//		at.insert(at.locate(Census.getAction("Club")), Census.getAction("Rage"));
-//		
-//		at.print();
-//	}
-	
+
 }

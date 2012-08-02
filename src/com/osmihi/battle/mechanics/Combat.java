@@ -156,6 +156,7 @@ public class Combat {
 			}
 			combatants.remove(c);
 			setMessage(c.getName() + " has perished.");
+			gui_bs.refresh(c);
 			return false;
 		}
 		return true;
