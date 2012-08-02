@@ -104,6 +104,10 @@ public class Census {
 		conditions.get("Aided").setDefenseMod(10);
 		conditions.get("Aided").setDuration(1);
 		
+		conditions.put("Hemorrhage", new Condition("Hemorrhage"));
+		conditions.get("Hemorrhage").setRoundDam(40);
+		conditions.get("Hemorrhage").setDuration(1);
+		
 		// Actions
 		// Attacks, Skills, Spells
 
@@ -126,8 +130,8 @@ public class Census {
 		attacks.put("Knife", new Action("Knife", Action.ActionType.ATTACK));
 		attacks.get("Knife").setMpCost(0);
 		attacks.get("Knife").setSuccessChance(7);
-		attacks.get("Knife").setMinDamage(2);
-		attacks.get("Knife").setMaxDamage(6);
+		attacks.get("Knife").setMinDamage(4);
+		attacks.get("Knife").setMaxDamage(8);
 		attacks.get("Knife").setStatusChance(1);
 		attacks.get("Knife").setStatusEffect(conditions.get("Bleed"));
 
@@ -203,13 +207,13 @@ public class Census {
 		attacks.get("Shield Bash").setStatusChance(8);
 		attacks.get("Shield Bash").setStatusEffect(conditions.get("Slow"));
 
-		attacks.put("Assassinate", new Action("Assassinate", Action.ActionType.ATTACK));
-		attacks.get("Assassinate").setMpCost(0);
-		attacks.get("Assassinate").setSuccessChance(4);
-		attacks.get("Assassinate").setMinDamage(20);
-		attacks.get("Assassinate").setMaxDamage(40);
-		attacks.get("Assassinate").setStatusChance(10);
-		attacks.get("Assassinate").setStatusEffect(conditions.get("Bleed"));
+		attacks.put("Throat Cut", new Action("Throat Cut", Action.ActionType.ATTACK));
+		attacks.get("Throat Cut").setMpCost(0);
+		attacks.get("Throat Cut").setSuccessChance(8);
+		attacks.get("Throat Cut").setMinDamage(6);
+		attacks.get("Throat Cut").setMaxDamage(10);
+		attacks.get("Throat Cut").setStatusChance(6);
+		attacks.get("Throat Cut").setStatusEffect(conditions.get("Hemorrhage"));
 		
 		attacks.put("Wolf Bite", new Action("Wolf Bite", Action.ActionType.ATTACK));
 		attacks.get("Wolf Bite").setMpCost(0);
@@ -385,9 +389,9 @@ public class Census {
 		
 		heroTypes.put("Thief", new HeroType("Thief"));
 		heroTypes.get("Thief").setStrengthMod(-6);
-		heroTypes.get("Thief").setIntelligenceMod(8);
+		heroTypes.get("Thief").setIntelligenceMod(5);
 		heroTypes.get("Thief").setSpeedMod(10);
-		heroTypes.get("Thief").setOffenseMod(-7);
+		heroTypes.get("Thief").setOffenseMod(-4);
 		heroTypes.get("Thief").setDefenseMod(10);
 		heroTypes.get("Thief").setHpUnit(12);
 		heroTypes.get("Thief").setMpUnit(12);
@@ -400,9 +404,11 @@ public class Census {
 		thiefTree.insert(actions.get("Knife"), actions.get("Trip"));
 		thiefTree.insert(actions.get("Knife"), actions.get("Hide"));
 		thiefTree.insert(actions.get("Trip"), actions.get("Cripple"));
+		thiefTree.insert(actions.get("Haste"), actions.get("Bolt"));
 		thiefTree.insert(actions.get("Poison Dart"), actions.get("Lacerate"));
-		thiefTree.insert(actions.get("Lacerate"), actions.get("Assassinate"));
+		thiefTree.insert(actions.get("Lacerate"), actions.get("Throat Cut"));
 		thiefTree.insert(actions.get("Hide"), actions.get("Aid"));
+		thiefTree.insert(actions.get("Hide"), actions.get("Haste"));
 		heroTypes.get("Thief").setActionTree(thiefTree);
 		
 		heroTypes.put("Knight", new HeroType("Knight"));
@@ -417,11 +423,10 @@ public class Census {
 //		heroTypes.get("Knight").addImmunity(conditionToAdd);
 		// actions
 		heroTypes.get("Knight").setStartingActionPoints(2);
-		ActionTree knightTree = new ActionTree(actions.get("Shortsword"));
-		knightTree.insert(actions.get("Shortsword"), actions.get("Longsword"));
-		knightTree.insert(actions.get("Shortsword"), actions.get("Shield Bash"));
-		knightTree.insert(actions.get("Shield Bash"), actions.get("Protect"));
-		knightTree.insert(actions.get("Protect"), actions.get("Mace"));
+		ActionTree knightTree = new ActionTree(actions.get("Longsword"));
+		knightTree.insert(actions.get("Longsword"), actions.get("Shield Bash"));
+		knightTree.insert(actions.get("Shield Bash"), actions.get("Mace"));
+		knightTree.insert(actions.get("Longsword"), actions.get("Protect"));
 		heroTypes.get("Knight").setActionTree(knightTree);
 
 		heroTypes.put("Wizard", new HeroType("Wizard"));

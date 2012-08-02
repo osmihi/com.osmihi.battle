@@ -108,6 +108,7 @@ public class GUI_CharScreen extends GUI_GenericWindow {
 		game = g;
 		refresh();
 		makeHeroesPanel();
+		nameBtn.doClick();
 	}
 	
 	protected void populateWindow() {

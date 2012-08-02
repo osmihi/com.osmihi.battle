@@ -118,7 +118,7 @@ public class Creature implements Serializable {
 
 	public int loseHp(int dam) {
 		if (dam < 0) {dam = 0;}
-		hp -= dam;
+		hp = hp - dam;
 		if (hp <= 0) {
 			hp = 0;
 		}
@@ -130,6 +130,7 @@ public class Creature implements Serializable {
 		if (hp > maxHp) {hp = maxHp;}
 		return hp;
 	}
+	
 	public int loseMp(int drain) {
 		if (drain < 0) {drain = 0;}
 		mp -= drain;

@@ -123,27 +123,29 @@ public class Combat {
 		if (c.getHp() > 0) {
 			for (Condition con : c.getStatus().keySet()) {sustainStatus(c,con);}
 			for (Condition con : c.getStatus().keySet()) {if (c.getStatusDuration(con) == 0) {endStatus(c,con);}}
-			if (heroes.contains(c)) {
-				// Hero prompt / choice here
-				Map<Creature,Action> rChoice = gui_bs.turnView(c);
-				for (Creature tar : rChoice.keySet()) {rTarget = tar;}
-				for (Action actio : rChoice.values()) {rAction = actio;}
-				gui_bs.turnView();
-			} else {
-				// Enemy AI here
-				enemyTurn = true;
-				rAction = Generator.random(c.getActions());
-				while (rTarget == null) {rTarget = Generator.random(heroes);}						
+			if (checkLife(c)) {
+				if (heroes.contains(c)) {
+					// Hero prompt / choice here
+					Map<Creature,Action> rChoice = gui_bs.turnView(c);
+					for (Creature tar : rChoice.keySet()) {rTarget = tar;}
+					for (Action actio : rChoice.values()) {rAction = actio;}
+					gui_bs.turnView();
+				} else {
+					// Enemy AI here
+					enemyTurn = true;
+					rAction = Generator.random(c.getActions());
+					while (rTarget == null) {rTarget = Generator.random(heroes);}						
+				}
+				incident(c,rAction,rTarget);
+				gui_bs.animate(c);
+				checkLife(c);
 			}
-			incident(c,rAction,rTarget);
-			gui_bs.animate(c);
-			checkLife(c);
 			checkLife(rTarget);
 			if (enemyTurn) {Generator.delay(TICK);}
 		}
 	}
 	
-	private void checkLife(Creature c) {
+	private boolean checkLife(Creature c) {
 		if (c != null && c.getHp() <= 0) {
 			if (heroes.contains(c)) {
 				heroes.remove(c);
@@ -154,7 +156,9 @@ public class Combat {
 			}
 			combatants.remove(c);
 			setMessage(c.getName() + " has perished.");
+			return false;
 		}
+		return true;
 	}
 	
 	private void endBattle() {
@@ -184,7 +188,8 @@ public class Combat {
 				h.setGp( h.getGp() + gpEa );
 				((Hero)h).setXp( ((Hero)h).getXp() + xpEa );
 			}
-			setMessage("Heroes receive " + gpEa + " gold pieces and earn " + xpEa + " experience points each.");
+			setMessage("Heroes receive " + gpEa + " gold pieces each.");
+			setMessage("Heroes earn " + xpEa + " experience points each.");
 			
 		}
 		else {
@@ -197,7 +202,7 @@ public class Combat {
 		enemies.clear();
 		deadEnemies.clear();
 		combatants.clear();
-		Generator.delay(TICK * 5);
+		Generator.delay(TICK * 3);
 		gui_bs.dispose();
 	}
 	

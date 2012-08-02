@@ -66,10 +66,13 @@ public class GUI_BattleScreen extends GUI_GenericWindow {
 	Map<Creature,Avatar> creaturePanels;
 	Map<Creature,StatBox> statBoxes;
 	
-	JPanel bottomPanel;
+	JPanel choicePanel;
 	CardLayout cardSet;
 	Map<Creature,TurnPanel> turnPanels;
-		
+	private JPanel blankPanel;
+	
+	private JPanel bottomPanel;
+	
 	JPanel battleTextPanel;
 	JTextArea battleText;
 	
@@ -84,14 +87,23 @@ public class GUI_BattleScreen extends GUI_GenericWindow {
 		turnPanels = new HashMap<Creature,TurnPanel>();
 		
 		cardSet = new CardLayout();
-		bottomPanel = new JPanel(cardSet);
+		choicePanel = new JPanel(cardSet);
+		choicePanel.setOpaque(false);
+		
+		blankPanel = new JPanel();
+		blankPanel.setOpaque(false);
+		
+		bottomPanel = new JPanel(new GridLayout(1,2,0,0));
+		bottomPanel.setOpaque(false);
+		bottomPanel.add(choicePanel);
 		
 		makePicPanel();
 		makeTextPanel();
 		makeTurnPanels();
 
 		mainPanel.add(battlePicPanel, BorderLayout.NORTH);
-		mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+		//mainPanel.add(choicePanel, BorderLayout.SOUTH);
+		mainPanel.add(bottomPanel);
 	}
 	
 	protected void populateWindow() {
@@ -209,28 +221,33 @@ public class GUI_BattleScreen extends GUI_GenericWindow {
 	
 	private void makeTextPanel() {
 		battleTextPanel = new JPanel(); 
-		battleTextPanel.setPreferredSize(new Dimension(620,248));
+		battleTextPanel.setPreferredSize(new Dimension(310,248));
 		battleTextPanel.setLayout(new BorderLayout(4,4));
 		battleText = new JTextArea("");
 		battleText.setFont(new Font("Consolas", Font.PLAIN, 12));
 		battleText.setEditable(false);
+		battleText.setLineWrap(true);
+		battleText.setWrapStyleWord(true);
+		
 		JScrollPane btScroll = new JScrollPane(battleText);
 		btScroll.setPreferredSize(battleTextPanel.getPreferredSize());
 		btScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		battleTextPanel.add(btScroll, BorderLayout.CENTER);
-		bottomPanel.add(battleTextPanel, "battleText");
+		//choicePanel.add(battleTextPanel, "battleText");
+		bottomPanel.add(battleTextPanel);
 	}
 	
 	private void makeTurnPanels() {
 		for (Creature h : bc.getHeroes()) {
 			turnPanels.put(h, new TurnPanel(h));
-			bottomPanel.add(turnPanels.get(h), h.getName());
+			choicePanel.add(turnPanels.get(h), h.getName());
+			choicePanel.add(blankPanel, "blank");
 		}
 	}
 	
 	public Map<Creature,Action> turnView(Creature c) {
 		turnPanels.get(c).refresh();
-		cardSet.show(bottomPanel, c.getName());
+		cardSet.show(choicePanel, c.getName());
 		Map<Creature,Action> choice = new HashMap<Creature,Action>();
 		while (selectedTarget == null || selectedAction == null) {
 			Generator.delay(50);
@@ -245,7 +262,7 @@ public class GUI_BattleScreen extends GUI_GenericWindow {
 	}
 	
 	public void turnView() {
-		cardSet.show(bottomPanel, "battleText");
+		cardSet.show(choicePanel, "blank");
 	}
 	
 	private class StatBox extends JPanel {
@@ -332,7 +349,7 @@ public class GUI_BattleScreen extends GUI_GenericWindow {
 		if ((rpt & 1) != 0) {rpt++;} // make sure it's an even number of repeats
 		for (int i= 0; i < rpt; i++) {
 			if (creaturePanels.containsKey(c)) {creaturePanels.get(c).flip();}
-			if (turnPanels.containsKey(c)) {turnPanels.get(c).flip();}
+			//if (turnPanels.containsKey(c)) {turnPanels.get(c).flip();}
 			Generator.delay(FRAME_RATE);
 		}
 	}
@@ -349,7 +366,7 @@ public class GUI_BattleScreen extends GUI_GenericWindow {
 		for (int i = 0; i < rpt; i++) {
 			for (Creature c : col) {
 				if (creaturePanels.containsKey(c)) {creaturePanels.get(c).flip();}
-				if (turnPanels.containsKey(c)) {turnPanels.get(c).flip();}
+				//if (turnPanels.containsKey(c)) {turnPanels.get(c).flip();}
 			}
 			Generator.delay(FRAME_RATE);
 		}
@@ -377,13 +394,9 @@ public class GUI_BattleScreen extends GUI_GenericWindow {
 	private class TurnPanel extends JPanel {
 		private static final long serialVersionUID = 1L;
 		private Creature c;
-		private JPanel picPane;
-		private ImageIcon icon;
-		private ImageIcon icon2;
-		private JLabel picl;
+		private Avatar picPane;
 		private JPanel infoPane;
 		private JPanel targetPane;
-		private JPanel targetPics;
 		private CardLayout tCards;
 		private JPanel actionPane;
 		
@@ -391,14 +404,6 @@ public class GUI_BattleScreen extends GUI_GenericWindow {
 		private JLabel mpLabel;
 		private JLabel conLabel;
 		
-		private JLabel strLabel;
-		private JLabel intLabel;
-		private JLabel spdLabel;
-		private JLabel offLabel;
-		private JLabel defLabel;
-		
-		private JLabel tName;
-		private JLabel tStat;
 		private Map<Action,JButton> actionBtns;
 
 		public TurnPanel(Creature cre) {
@@ -406,28 +411,32 @@ public class GUI_BattleScreen extends GUI_GenericWindow {
 			hpLabel = new JLabel();
 			mpLabel = new JLabel();
 			conLabel = new JLabel();
-			strLabel = new JLabel();
-			intLabel = new JLabel();
-			spdLabel = new JLabel();
-			offLabel = new JLabel();
-			defLabel = new JLabel();
 			
 			targetPane = new JPanel();
-			targetPics = new JPanel();
-			tName = new JLabel(" ");
-			tStat = new JLabel(" ");
 			actionBtns = new HashMap<Action,JButton>();
 			
 			refresh();
-			makePicPane();
+			picPane = new Avatar(c);
 			makeInfoPane();
 			makeTargetPane();
 			makeActionPane();
 			
-			setLayout(new GridLayout(0,4,5,5));
-			add(infoPane);
-			add(picPane);
-			add(targetPane);
+			infoPane.setOpaque(false);
+			targetPane.setOpaque(false);
+			actionPane.setOpaque(false);
+			
+			JPanel topSection = new JPanel();
+			topSection.setOpaque(false);
+			topSection.setLayout(new GridLayout(0,3,5,5));
+			topSection.setBorder(new EmptyBorder(20,0,0,0));
+			topSection.add(infoPane);
+			topSection.add(picPane);
+			topSection.add(targetPane);
+			
+			setOpaque(false);
+			setLayout(new GridLayout(2,1,0,0));
+			
+			add(topSection);
 			add(actionPane);
 		}
 		
@@ -439,81 +448,32 @@ public class GUI_BattleScreen extends GUI_GenericWindow {
 			hl.setAlignmentX(Component.CENTER_ALIGNMENT);
 			hpLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 			mpLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-			strLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-			intLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-			spdLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-			offLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-			defLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-			conLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 			
-			infoPane.add(new JLabel(" "));
 			infoPane.add(hl);
 			infoPane.add(new JLabel(" "));
 			infoPane.add(hpLabel);
 			infoPane.add(mpLabel);
 			infoPane.add(new JLabel(" "));
-			infoPane.add(strLabel);
-			infoPane.add(intLabel);
-			infoPane.add(spdLabel);
-			infoPane.add(offLabel);
-			infoPane.add(defLabel);
-			
+
 			infoPane.add(conLabel);
 			for (Condition con : c.getStatus().keySet()) {
 				infoPane.add(new JLabel(con.getName() + " (" + c.getStatus().get(con).intValue() + ")"));
 			}
 		}
 		
-		private void makePicPane() {
-			if (c.getImageFile() != null) {icon = new ImageIcon(c.getImageFile());}
-			else {icon = new ImageIcon("res/img/_blank.png");}
-			if (c.getImageAlt() != null) {icon2 = new ImageIcon(c.getImageAlt());}
-			else {icon2 = icon;}
-			
-			picPane = new JPanel();
-			picPane.setLayout(new BoxLayout(picPane, BoxLayout.Y_AXIS));
-						
-			picl = new JLabel(icon, JLabel.CENTER);
-			picl.setAlignmentX(Component.CENTER_ALIGNMENT);
-			JLabel naml = new JLabel(c.getName(), JLabel.CENTER);
-			naml.setAlignmentX(Component.CENTER_ALIGNMENT);
-			JLabel hrol = new JLabel("Lv " + ((Hero)c).getLevel() + " " + ((Hero)c).getHeroType().getName());
-			hrol.setAlignmentX(Component.CENTER_ALIGNMENT);
-			
-			picPane.add(new JLabel(" "));
-			picPane.add(new JLabel(" "));
-			picPane.add(new JLabel(" "));
-			picPane.add(naml);
-			picPane.add(new JLabel(" "));
-			picPane.add(picl);
-			picPane.add(new JLabel(" "));
-			picPane.add(hrol);
-			picPane.add(new JLabel(" "));
-		}
-		
 		private void makeTargetPane() {
 			tCards = new CardLayout();
-			targetPics.setLayout(tCards);
-			targetPics.add(new JLabel("Select Target"), "blank");
+			targetPane.setLayout(tCards);
+			targetPane.setOpaque(false);
+			targetPane.add(new JLabel("Select Target"), "blank");
 			
 			for (Creature e : bc.getCombatants()) {	
-				JLabel pLbl = new JLabel(new ImageIcon(e.getImageFile()), JLabel.CENTER);
-				targetPics.add(pLbl, e.getId().toString());
+				targetPane.add(new Avatar(e), e.getId().toString());
 			}
-			
-			targetPane.setLayout(new BoxLayout(targetPane, BoxLayout.Y_AXIS));
-			tName.setAlignmentX(CENTER_ALIGNMENT);
-			tStat.setAlignmentX(CENTER_ALIGNMENT);
-			
-			targetPane.add(tName);
-			targetPane.add(targetPics);
-			targetPane.add(tStat);
 		}
 
 		private void makeActionPane() {
-			actionPane = new JPanel();
-			//actionPane.setLayout(new BoxLayout(actionPane, BoxLayout.Y_AXIS));
-			actionPane.setLayout(new GridLayout(0,1));
+			actionPane = new JPanel(new GridLayout(3,0));
 			for (final Action a : c.getActions()) {
 				JButton btn = new JButton(a.getName() + " (" + a.getType().toString() + ")");
 				btn.setAlignmentX(CENTER_ALIGNMENT);
@@ -544,11 +504,6 @@ public class GUI_BattleScreen extends GUI_GenericWindow {
 		private void refreshStats() {
 			hpLabel.setText(c.getHp() + " / " + c.getMaxHp() + " hp");
 			mpLabel.setText(c.getMp() + " / " + c.getMaxMp() + " mp");
-			strLabel.setText("Str: " + c.getStrength());
-			intLabel.setText("Int: " + c.getIntelligence());
-			spdLabel.setText("Spd: " + c.getSpeed());
-			offLabel.setText("Off: " + c.getOffense());
-			defLabel.setText("Def: " + c.getDefense());
 			
 			String conText = "";
 			for (Condition con : c.getStatus().keySet()) {
@@ -559,21 +514,16 @@ public class GUI_BattleScreen extends GUI_GenericWindow {
 		
 		public void selectTarget(Creature c) {
 			if (c != null) {
-				tName.setText(c.getName());
-				tCards.show(targetPics, c.getId().toString());
-				tStat.setText(c.getHp() + " hp");
+				tCards.show(targetPane, c.getId().toString());
 			}
 		}
 		
 		public void resetTarget() {
-			tName.setText("");
-			tCards.show(targetPics, "blank");
-			tStat.setText("");
+			tCards.show(targetPane, "blank");
 		}
 		
 		public void flip() {
-			if (picl.getIcon() == icon) {picl.setIcon(icon2);}
-			else {picl.setIcon(icon);}
+			picPane.flip();
 		}
 	}
 }
