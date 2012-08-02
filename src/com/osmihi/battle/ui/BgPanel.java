@@ -1,4 +1,17 @@
-// http://robbamforth.wordpress.com/2009/02/02/add-a-background-image-to-a-jpanel/
+/*********************************************************************************************************
+ * Fantasy Adventure Game - by Othman Smihi
+ * ICS 240 - Metropolitan State University - Summer 2012
+ * 
+ * I pledge that the contents of this file represent my own work, except as noted below.
+ * References:
+ * http://robbamforth.wordpress.com/2009/02/02/add-a-background-image-to-a-jpanel/
+ *
+ * ------------
+ * BgPanel.java
+ * ------------
+ * This class simply extends JPanel to make it easy to add a centered background image.
+ *  
+ *********************************************************************************************************/
 
 package com.osmihi.battle.ui;
 

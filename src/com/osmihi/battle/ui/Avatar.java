@@ -1,5 +1,18 @@
-// References:
-// http://darksleep.com/player/threads/
+/*********************************************************************************************************
+ * Fantasy Adventure Game - by Othman Smihi
+ * ICS 240 - Metropolitan State University - Summer 2012
+ * 
+ * I pledge that the contents of this file represent my own work, except as noted below.
+ * References:
+ * http://darksleep.com/player/threads/
+ *
+ * ------------
+ * Avatar.java
+ * ------------
+ * This class inherits from JPanel and provides a simple and reusable character icon for a Creature that
+ * allows some animation functions and other convenient methods.
+ *  
+ *********************************************************************************************************/
 
 package com.osmihi.battle.ui;
 

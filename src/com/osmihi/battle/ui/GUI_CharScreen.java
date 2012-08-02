@@ -14,10 +14,9 @@
  * -------------------
  * GUI_CharScreen.java
  * -------------------
- * This class is the GUI screen of the game where users create new Heroes. Right now it just creates  
- * some pre-fab hard-coded heroes, since character creation is not implemented yet. In the future, it will
- * display information like a Hero's attributes and actions etc, to be used when creating or leveling up
- * a Hero.  
+ * This class is the GUI screen of the game where users create new Heroes. It displays and facilitates 
+ * generation and editing of information like a Hero's attributes and actions etc, to be used when 
+ * creating or leveling up a Hero.  
  * 
  *********************************************************************************************************/
 
